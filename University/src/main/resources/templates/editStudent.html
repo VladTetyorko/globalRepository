@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head lang="en">
+<title>Edit Student</title>
+<th:block th:include="layout/header"></th:block>
+</head>
+<body>
+	<div class="container">
+		<h2>Edit Student</h2>
+		<div>
+			<form class="form-horizontal" th:object="${person}"
+				th:action="@{/persons/save/student}" method="post">
+				<div class="form-group">
+					<div class="col-sm-10">
+						<input type="hidden" class="form-control" th:field="*{id}" />
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-sm-2 control-label">Name:</label>
+					<div class="col-sm-10" >
+						<input type="text" class="form-control" th:field="*{name}" />
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-sm-2 control-label">Password:</label>
+					<div class="col-sm-10" th:if="${person.password != null}">
+						<input type="hidden" class="form-control" th:field="*{password}" />
+					</div>
+					<div class="col-sm-10" th:if="${person.password == null}">
+						<input type="password" class="form-control" th:field="*{password}" />
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-sm-2 control-label">Faculty:</label>
+					<div class="col-sm-10">
+						<input type="text" class="form-control" th:field="*{faculty}" />
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-sm-2 control-label">Group:</label> <select
+						th:field="*{groupId}">
+						<option th:each="group : ${groups}" th:value="${group.id}"
+							th:text="${group.groupName}"></option>
+					</select>
+					 <td th:if="${#fields.hasErrors('groupId')}" th:errors="*{groupId}">Group Error</td>
+				</div>
+				<div class="form-group">
+					<div class="col-sm-2">
+						<button type="submit" class="btn btn-primary">Save</button>
+					</div>
+				</div>
+			</form>
+		</div>
+	</div>
+</body>
+</html>

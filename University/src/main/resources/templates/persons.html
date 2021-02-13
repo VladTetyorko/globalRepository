@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+<title>Persons</title>
+<th:block th:include="layout/header"></th:block>
+</head>
+<body>
+	<table class="table table-bordered">
+		<thead>
+			<tr>
+				<th>Id</th>
+				<th>Name</th>
+				<th>Faculty</th>
+				<th>Role</th>
+				<th>GroupId</th>
+				<th>Academic degree</th>
+				<th>Position</th>
+				<th colspan="2"
+					th:if="${loginedPerson instanceof T(com.foxminded.university.entities.personDetails.Admin)}">
+					<form>
+					<p>New</p>
+						<select class="btn btn-primary btn-block" id="selectPerson"
+							onchange="window.location.href = 'persons/' + this.value ">
+							<option value="">---</option>
+							<option value="editStudent/0">Student</option>
+							<option value="editTeacher/0">Teacher</option>
+							<option value="editAdmin/0">Admin</option>
+						</select>
+					</form>
+				</th>
+				<th colspan="2"
+					th:unless="${loginedPerson instanceof T(com.foxminded.university.entities.personDetails.Admin)}">
+				</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr th:if="${persons.empty}">
+				<td colspan="7">No Persons Available</td>
+			</tr>
+			<tr th:each="person : ${persons}">
+				<td><span th:text="${person.id}"> Id </span></td>
+				<td><span th:text="${person.name}"> Name </span></td>
+				<td><span th:text="${person.faculty}"> Faculty </span></td>
+				<td><span th:text="${person.role}"> Role </span></td>
+				<td><span
+					th:if="${person instanceof T(com.foxminded.university.entities.personDetails.Student)}"
+					th:text="${person.group.Id}">GroupId</span></td>
+				<td><span
+					th:if="${person instanceof T(com.foxminded.university.entities.personDetails.Teacher)}"
+					th:text="${person.academicDegree}">Academic degree</span></td>
+				<td><span
+					th:if="${person instanceof T(com.foxminded.university.entities.personDetails.Admin)}"
+					th:text="${person.position}">Position</span></td>
+				<td><a class="btn btn-default"
+					th:if="${person instanceof T(com.foxminded.university.entities.personDetails.Student)}"
+					th:href="@{/persons/editStudent/{id} (id=${person.id})}">Edit</a> <a class="btn btn-default"
+					th:if="${person instanceof T(com.foxminded.university.entities.personDetails.Teacher)}"
+					th:href="@{/persons/editTeacher/{id} (id=${person.id})}">Edit</a> <a class="btn btn-default"
+					th:if="${person instanceof T(com.foxminded.university.entities.personDetails.Admin)}"
+					th:href="@{/persons/editAdmin/{id} (id=${person.id})}">Edit</a></td>
+				<td><a class="btn btn-danger"
+					th:href="@{/persons/delete/{id} (id=${person.id})}">Delete</a></td>
+			</tr>
+		</tbody>
+	</table>
+</body>
+</html>

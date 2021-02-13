@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head lang="en">
+<link rel="stylesheet"
+	href="/webjars/bootstrap/3.3.7-1/css/bootstrap.min.css" />
+<link th:href="@{/css/style.css}" href="../../static/css/style.css"
+	rel="stylesheet" />
+<script src="/webjars/jquery/3.1.1/jquery.min.js"></script>
+<script src="/webjars/bootstrap/3.3.7-1/js/bootstrap.min.js"></script>
+</head>
+<body>
+	<div class="container">
+		<div th:fragment="header">
+			<ul>
+				<li><a class="navbar-main" href="#" th:href="@{/}">Home</a></li>
+				<li><a th:href="@{/courses}">Courses</a></li>
+				<li><a th:href="@{/groups}">Groups</a></li>
+				<li><a th:href="@{/persons}">Persons</a></li>
+				<li><a th:href="@{/schedule}">Schedule</a></li>
+			</ul>
+		</div>
+	</div>
+	<div></div>
+</body>
+</html>

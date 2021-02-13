@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+<title>Courses</title>
+    <th:block th:include="layout/header"></th:block>
+</head>
+</head>
+<body>
+	<table class="table table-bordered">
+		<thead>
+			<tr>
+				<th>Id</th>
+				<th>Name</th>
+				<th>Description</th>
+				<th colspan="2"
+					th:if="${loginedPerson instanceof T(com.foxminded.university.entities.personDetails.Admin)}">
+					<a class="btn btn-primary btn-block" th:href="@{'/courses/createCourse'}">New Course</a>
+			   </th>
+			   <th colspan="2"
+					th:unless="${loginedPerson instanceof T(com.foxminded.university.entities.personDetails.Admin)}">
+			   </th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr th:if="${courses.empty}">
+				<td colspan="3">No Courses Available</td>
+			</tr>
+			<tr th:each="course : ${courses}">
+				<td><span th:text="${course.courseId}"> Id </span></td>
+				<td><span th:text="${course.courseName}"> Name </span></td>
+				<td><span th:text="${course.courseDescription}">Description</span></td>
+				 <td><a th:href="@{/courses/editCourses/{id} (id=${course.courseId})}" class="btn btn-default">Edit</a></td>
+				<td><a class="btn btn-danger"
+					th:href="@{/courses/delete/{id}(id=${course.courseId})}">Delete</a></td>
+			</tr>
+		</tbody>
+	</table>
+
+</body>
+</html>

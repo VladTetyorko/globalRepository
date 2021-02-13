@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+<title>Schedule</title>
+<th:block th:include="layout/header"></th:block>
+</head>
+</head>
+<body>
+
+	<table class="table table-bordered">
+		<thead>
+			<tr>
+				<th>Id</th>
+				<th>Timeslot</th>
+				<th>Teacher</th>
+				<th>Course</th>
+				<th>Group</th>
+				<th>Room</th>
+				<th>Week</th>
+				<th>Weekday</th>
+				<th colspan="2"
+					th:if="${loginedPerson instanceof T(com.foxminded.university.entities.personDetails.Admin)}">
+					<a class="btn btn-primary btn-block" th:href="@{'/schedule/createLecture'}">New Lecture</a>
+				</th>
+				<th colspan="2"
+					th:unless="${loginedPerson instanceof T(com.foxminded.university.entities.personDetails.Admin)}">
+				</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr th:if="${schedule.empty}">
+				<td colspan="9">No Lectures Available</td>
+			</tr>
+			<tr th:each="lecture : ${schedule}" th:object="${lecture}">
+				<td><span th:text="${lecture.lectureId}"> Id </span></td>
+				<td><span th:text="${lecture.timeSlot}"> Timeslot </span></td>
+				<td><span th:text="${lecture.teacher.name}"> Teacher </span></td>
+				<td><span th:text="${lecture.course.courseName}"> Course
+				</span></td>
+				<td><span th:text="${lecture.group.groupName}"> Group </span></td>
+				<td><span th:text="${lecture.audience}"> Room </span></td>
+				<td><span th:text="${lecture.week}"> Week </span></td>
+				<td><span th:text="${lecture.weekday}"> Weekday </span></td>
+				<td><a class="btn btn-default"
+					th:href="@{/schedule/editLecture/{id} (id=${lecture.lectureId})}">Edit</a></td>
+				<td><a class="btn btn-danger"
+					th:href="@{/schedule/delete/{id} (id=${lecture.lectureId})}">Delete</a></td>
+			</tr>
+		</tbody>
+	</table>
+	<form name="For weekDay">
+		<div>
+			<a>Show schedule on day for</a> <select id="selectPerson1">
+				<option value="0">all</option>
+				<option th:each="person : ${persons}" th:value="${person.id}"
+					th:text="${person.name}"></option>
+			</select> <a>on</a> <select id="selectDay">
+				<option value="all">all</option>
+				<option th:each="day : ${daysOfWeek}" th:value="${day}"
+					th:text="${day}"></option>
+			</select><input class="SubmitButton" type="submit"
+				name="SUBMITBUTTON" value="Submit" style="font-size: 20px;" />
+		</div>
+	</form>
+	<form name="For week">
+		<div>
+			<a>Show schedule on week for</a> <select id="selectPerson2">
+				<option value="0">all</option>
+				<option th:each="person : ${persons}" th:value="${person.id}"
+					th:text="${person.name}"></option>
+			</select> <a>on</a><select id="selectWeek">
+				<option value="all">all</option>
+				<option value="1">1</option>
+				<option value="2">2</option>
+			</select><input class="SubmitButton" type="submit" name="SUBMITBUTTON"
+				value="Submit" style="font-size: 20px;" />
+		</div>
+	</form>
+	<script src="//code.jquery.com/jquery-3.0.0.min.js"></script>
+	<script type="text/javascript" >
+    $('.SubmitButton').click(function(){ 
+
+    var urlPersonId1 = $('#selectPerson1 :selected').val();
+    var urlPersonId2 = $('#selectPerson2 :selected').val();
+    var urlDay = $('#selectDay :selected').val();
+    var urlWeek = $('#selectWeek :selected').val();
+    
+    var contextRoot = "${pageContext.request.contextPath}";
+    
+    if(urlPersonId2!="0")
+      {  if(urlWeek!="all")
+            window.open("schedule/forWeek/"+urlWeek+"/"+urlPersonId2);
+         else alert( "Please set week" );   
+      }
+    else if(urlPersonId1!="0"){
+      if(urlDay!="all")
+          window.open("schedule/forDay/"+urlDay+"/"+urlPersonId1);
+          else alert( "Please set day" );
+        }
+    });
+
+</script>
+</body>
+</html>

@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head lang="en">
+    <title>Edit Group</title>
+    <th:block th:include="layout/header"></th:block>
+</head>
+<body>
+<div class="container">
+    <h2>Edit Course</h2>
+    <div>
+        <form class="form-horizontal" th:object="${course}" th:action="@{/courses/save}" method="post">
+            <div class="form-group">
+                <div class="col-sm-10">
+                    <input type="hidden" class="form-control" th:field="*{courseId}"/>
+                    <td th:if="${#fields.hasErrors('courseId')}" th:errors="*{courseId}">Id Error</td>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label">Name:</label>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control" th:field="*{courseName}" />
+                    <td th:if="${#fields.hasErrors('courseName')}" th:errors="*{courseName}">Name Error</td>
+                </div>
+            </div>
+              <div class="form-group">
+                <label class="col-sm-2 control-label">Description:</label>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control" th:field="*{courseDescription}" />
+                    <td th:if="${#fields.hasErrors('courseDescription')}" th:errors="*{courseDescription}">Description Error</td>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-2">
+                    <button type="submit" class="btn btn-primary">Save</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+</body>
+</html>
