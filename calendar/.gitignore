@@ -31,8 +31,3 @@ build/
 
 ### VS Code ###
 .vscode/
-
-!etc/eclipse/.checkstyle
-.checkstyle
-s101plugin.state
-.attach_pid*
