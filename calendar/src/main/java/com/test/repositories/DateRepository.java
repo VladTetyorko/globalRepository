@@ -1,4 +1,4 @@
-package com.test.calendar.repositories;
+package com.test.repositories;
 
 import java.util.List;
 import java.util.Optional;

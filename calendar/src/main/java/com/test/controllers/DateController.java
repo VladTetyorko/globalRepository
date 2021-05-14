@@ -1,4 +1,4 @@
-package com.test.calendar.controllers;
+package com.test.controllers;
 
 import java.util.List;
 
@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import com.test.calendar.Calendar;
 import com.test.calendar.entities.Date;
 import com.test.calendar.exeptions.IlegalDateException;
-import com.test.calendar.services.DateService;
+import com.test.services.DateService;
 
 @Controller
 public class DateController {

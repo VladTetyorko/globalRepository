@@ -1,4 +1,4 @@
-package com.test.calendar.services;
+package com.test.services;
 
 import java.util.List;
 import java.util.Optional;
@@ -10,7 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.test.calendar.entities.Date;
 import com.test.calendar.entities.Task;
-import com.test.calendar.repositories.TaskRepository;
+import com.test.repositories.TaskRepository;
 
 @Service
 public class TaskService {

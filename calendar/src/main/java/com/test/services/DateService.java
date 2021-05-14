@@ -1,4 +1,4 @@
-package com.test.calendar.services;
+package com.test.services;
 
 import java.util.List;
 import java.util.Optional;
@@ -11,7 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.test.calendar.Calendar;
 import com.test.calendar.entities.Date;
 import com.test.calendar.exeptions.IlegalDateException;
-import com.test.calendar.repositories.DateRepository;
+import com.test.repositories.DateRepository;
 
 @Service
 public class DateService {
@@ -77,7 +77,7 @@ public class DateService {
 	public Date findDay(int day, int month, int year) {
 		if (logger.isDebugEnabled())
 			logger.debug("Searching for {}.{}.{} day", day, month, year);
-		if (day < 0 || day > calendar.getNumberOfDays(month, year) || month < 0 || month > 12) {
+		if (day < 0 || day > Calendar.getNumberOfDays(month, year) || month < 0 || month > 12) {
 			logger.warn("Illegal date!", new IlegalDateException(month, year));
 			throw new IlegalDateException(month, year);
 		}

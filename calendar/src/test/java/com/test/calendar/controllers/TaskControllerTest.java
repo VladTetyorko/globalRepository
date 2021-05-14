@@ -22,8 +22,8 @@ import org.springframework.web.context.WebApplicationContext;
 
 import com.test.calendar.entities.Date;
 import com.test.calendar.entities.Task;
-import com.test.calendar.services.DateService;
-import com.test.calendar.services.TaskService;
+import com.test.services.DateService;
+import com.test.services.TaskService;
 
 @SpringBootTest
 class TaskControllerTest {

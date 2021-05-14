@@ -1,11 +1,12 @@
-package com.test.calendar.services;
+package com.test.services;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
-import com.test.calendar.repositories.DateRepository;
+import com.test.repositories.DateRepository;
+import com.test.services.DateService;
 
 class DateServiceTest {
 

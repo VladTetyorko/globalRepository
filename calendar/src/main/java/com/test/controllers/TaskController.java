@@ -1,4 +1,4 @@
-package com.test.calendar.controllers;
+package com.test.controllers;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -8,8 +8,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.test.calendar.entities.Date;
 import com.test.calendar.entities.Task;
-import com.test.calendar.services.DateService;
-import com.test.calendar.services.TaskService;
+import com.test.services.DateService;
+import com.test.services.TaskService;
 
 @Controller
 public class TaskController {
