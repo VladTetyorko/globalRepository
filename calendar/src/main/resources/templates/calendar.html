@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+   <head lang="en">
+      <link th:href="@{/css/style.css}" href="../../static/css/style.css"
+         rel="stylesheet" />
+   </head>
+   <body>
+      <div class="calendar">
+      <div >
+      <a th:href="@{'/'+'previous'}"><-</a>
+      <span th:utext="${month}">Month</span>
+      <a th:href="@{'/'+'next'}">-></a>
+      </div>
+      <div class="calendar_date">
+         <div class="weekday">M</div>
+         <div class="weekday">T</div>
+         <div class="weekday">W</div>
+         <div class="weekday">T</div>
+         <div class="weekday">F</div>
+         <div class="weekday">S</div>
+         <div class="weekday">S</div>
+         <div class="calendar_day_previous" th:each="date, state : ${prevoiousDays}" >
+            <span th:utext="${date.day}"></span>
+         </div>
+         <div class="calendar_day" th:each="date, state : ${currentDays}" >
+            <div>
+               <a th:href="@{'/calendar/'+${date.year}+'/'+${date.month}+'/'+${date.day}}">
+               <span th:utext="${date.day}">day</span>        
+               </a>
+            </div>
+            <div>
+               <sup class="small_task" th:if="${not #lists.isEmpty(date.tasks)}" 
+                  th:utext="${date.tasksSize}">
+               </sup>
+            </div>
+      </div>
+   </body>
+</html>
