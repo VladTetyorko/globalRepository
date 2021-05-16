@@ -31,7 +31,7 @@ public class TaskService {
 			logger.info("Task {} saved", saved.toString());
 			return saved;
 		} catch (Exception e) {
-			logger.error(e.toString());
+			logger.warn(e.toString());
 		}
 		return saved;
 	}

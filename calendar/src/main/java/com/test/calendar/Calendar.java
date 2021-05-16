@@ -1,7 +1,5 @@
 package com.test.calendar;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -12,8 +10,7 @@ import com.test.calendar.entities.Date;
 
 public class Calendar {
 
-	private final static String DAYS_OF_WEEK[] = { "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday",
-			"Saturday" };
+	private final static int DAYS_OF_WEEK[] = { 7, 1, 2, 3, 4, 5, 6 };
 	private final static int CENTURY_YEAR_OVERSIGHT[] = { 0, 3, 3, 6, 1, 4, 6, 2, 5, 0, 3, 5 };
 
 	public final static String MONTHS[] = { "January", "February", "March", "April", "May", "June", "July", "August",
@@ -45,17 +42,20 @@ public class Calendar {
 		return j;
 	}
 
-	public int getFirstWeekday(int month, int year) {
+	public static int getWeekday(int day, int month, int year) {
 		int dayNumber = 0;
-		int total = (year % 100) + ((year % 100) / 4) + 1 + CENTURY_YEAR_OVERSIGHT[month - 1] + getYearOversight(year);
+		int total = (year % 100) + ((year % 100) / 4) + day + CENTURY_YEAR_OVERSIGHT[month - 1]
+				+ getYearOversight(year);
 		if (ifIsLap(year)) {
 			if ((total % 7) > 0)
-				dayNumber = ((total % 7) + 1);
+				dayNumber = DAYS_OF_WEEK[(total % 7) - 1];
 			else
-				dayNumber = 6;
+				dayNumber = DAYS_OF_WEEK[6];
+			if (month > 2)
+				dayNumber++;
 		} else
-			dayNumber = (total % 7);
-		return dayNumber - 1;
+			dayNumber = DAYS_OF_WEEK[(total % 7)];
+		return dayNumber;
 	}
 
 	public static int getNumberOfDays(int month, int year) {
@@ -82,7 +82,7 @@ public class Calendar {
 		return 0;
 	}
 
-	public String getStringMonth(int month) {
+	public static String getStringMonth(int month) {
 		return MONTHS[month - 1];
 	}
 
@@ -108,28 +108,6 @@ public class Calendar {
 			datesMap.put(i, new Date(i, month, year));
 		}
 		return datesMap.values().stream().collect(Collectors.toList());
-	}
-
-	public List<Date> findLastDaysInPreviousMonth(int month, int year) {
-		int neededYear = 0;
-		int neededMonth = 0;
-		List<Date> list = new ArrayList<Date>();
-		if (month == 1) {
-			neededYear = year - 1;
-			neededMonth = 12;
-		} else {
-			neededYear = year;
-			neededMonth = month - 1;
-		}
-		int dayCount = getNumberOfDays(neededMonth, neededYear);
-		int firstDayOfCurrent = getFirstWeekday(month, year);
-		for (int i = 0; i < firstDayOfCurrent; i++) {
-			Date d = new Date(dayCount, neededMonth, neededYear);
-			list.add(d);
-			dayCount--;
-		}
-		Collections.sort(list);
-		return list;
 	}
 
 }

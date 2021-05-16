@@ -2,12 +2,13 @@
 <html xmlns:th="http://www.thymeleaf.org">
    <head lang="en">
       <title>Edit Task</title>
-      <link th:href="@{/css/style.css}" href="../../static/css/style.css"
-         rel="stylesheet" />
+      <link th:href="@{/css/style.css}" href="../../static/css/style.css" rel="stylesheet" />
+      <link th:rel="stylesheet" th:href="@{/webjars/bootstrap/4.0.0-2/css/bootstrap.min.css}" />
    </head>
    <body>
-      <div class="container">
-         <h2>Edit Task</h2>
+      <div class="container2">
+         <h3>Task</h3>
+          <span th:utext=" 'on '+${task.date.day}+' '+${task.date.stringMonth}+', '+${task.date.year}">Date</span>
          <div>
             <form class="form-horizontal" th:object="${task}" th:action="@{/save/task}" method="post">
                <div class="form-group">

@@ -6,8 +6,8 @@ body {
    text-align: center;
   height: 100vh;
   font-family: 'Poppins', sans-serif;
-  background: url("https://steamuserimages-a.akamaihd.net/ugc/916923327996368167/2E9A20BCFF717A81A0247C74B761D185A8C10887/") no-repeat center / cover;
-  
+  background: transparent url("https://www.ionos.com/digitalguide/fileadmin/DigitalGuide/Teaser/totp-t.jpg") no-repeat;
+    
   &::before {
     content: "";
     position: absolute;
@@ -20,6 +20,27 @@ body {
   }
 }
 
+a.day_link:link {color: #202020;}
+a.day_link:visited {color: #202020;}
+a.day_link:hover {font-size: 120%}
+a.day_link:active {color: red;}
+
+table, th, td {
+	margin-left: auto;
+	margin-right: auto;
+	margin-bottom:auto;
+	border: 0.1em solid black;
+}
+th {
+	padding: 2em;
+	text-align: center;
+}
+
+td {
+	padding: 1.8em;
+	text-align: center;
+}
+
 .calendar {
   position: relative;
   width: 300px;
@@ -29,7 +50,6 @@ body {
   border-radius: 8px;
   overflow: hidden;
 }
-
 .calendar_date {
   padding: 20px;
   display: grid;
@@ -48,28 +68,43 @@ body {
  
 }
 
-.calendar_day_previous {
+.calendar_day_unactive {
+  position: relative;
+  border: 1px solid grey;
+  border-radius: 5px;
   display: flex;
-  align-items: center;
+  align-items: end;
   justify-content: center;
   height: 25px;
   color: gray;
 }
 
-.calendar_day {
+.calendar_day_active {
+    position: relative;
+    border: 2px solid black;
+   border-radius: 5px;
   display: flex;
-  align-items: center;
+  align-items: end;
   justify-content: center;
   height: 25px;
   color: black;
 }
 
- .small_task{
-     color: red;
+.container_sup{
+ position: absolute;
+ right:0px;
+  top:0px;
+  font-size: 10px;
+  color: red;
 }
 
 .container{
- background-color: #fff;
-  box-sizing: border-box;
+  background-color: white;
+    display: block;
+  text-align: center;
 }
 
+.container2{
+  background-color: white;
+  display: block;
+}

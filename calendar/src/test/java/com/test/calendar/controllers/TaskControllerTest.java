@@ -50,16 +50,10 @@ class TaskControllerTest {
 	}
 
 	@Test
-	void shouldProcessWhenFindOneDay() throws Exception {
-		this.mockMvc.perform(get("/calendar/2020/5/1")).andExpect(status().isOk())
-				.andExpect(content().contentType("text/html;charset=UTF-8")).andExpect(model().attribute("date", date));
-	}
-
-	@Test
 	void shouldProcessWhenFindOneTaskInDay() throws Exception {
 		date.setID(1);
 		task.setID(1);
-		this.mockMvc.perform(get("/calendar/2020/5/1/editTask/1")).andExpect(status().isOk())
+		this.mockMvc.perform(get("/2020/5/1/editTask/1")).andExpect(status().isOk())
 				.andExpect(content().contentType("text/html;charset=UTF-8")).andExpect(model().attribute("task", task));
 	}
 
@@ -73,7 +67,7 @@ class TaskControllerTest {
 
 	@Test
 	void shouldProcessWhenDeleteOne() throws Exception {
-		this.mockMvc.perform(get("/calendar/2020/5/1/deleteTask/1")).andExpect(status().is3xxRedirection())
+		this.mockMvc.perform(get("/2020/5/1/deleteTask/1")).andExpect(status().is3xxRedirection())
 				.andExpect(redirectedUrl("/"));
 		verify(taskService, times(1)).delete(1);
 	}

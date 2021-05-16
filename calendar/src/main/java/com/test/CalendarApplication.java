@@ -17,8 +17,7 @@ public class CalendarApplication {
 	public static void main(String[] args) throws IlegalDateException {
 		logger.info("Application Start");
 		SpringApplication.run(CalendarApplication.class, args);
-		logger.info("Application Start");
-
+		logger.info("Application End");
 	}
 
 	@Bean

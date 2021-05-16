@@ -14,7 +14,7 @@ import com.test.calendar.entities.Task;
 public class CalendarTest {
 
 	private List<Date> list = new ArrayList<Date>();
-	private final Calendar calengar = new Calendar();
+	private final Calendar calendar = new Calendar();
 
 	@Test
 	void shouldReturnFullMonthWhenDaysExsist() {
@@ -31,14 +31,14 @@ public class CalendarTest {
 		list.add(d2);
 		list.add(d3);
 
-		List<Date> result = calengar.fillCalendar(list);
+		List<Date> result = calendar.fillCalendar(list);
 		assertTrue(result.size() == 31);
 		assertTrue(result.get(2).getTasks() != null);
 	}
 
 	@Test
 	void shouldReturnFullMonthWhenNoDaysExsist() {
-		List<Date> result = calengar.fillCalendar(5, 2021);
+		List<Date> result = calendar.fillCalendar(5, 2021);
 		assertTrue(result.size() == 31);
 	}
 
@@ -51,7 +51,13 @@ public class CalendarTest {
 
 	@Test
 	void shouldReturnCorrectLastDayOfPreviousMounth() {
-		assertEquals(5, calengar.findLastDaysInPreviousMonth(5, 2021).size());
+		assertEquals(6, Calendar.getWeekday(1, 5, 2021));
+		assertEquals(7, Calendar.getWeekday(1, 8, 2021));
+		assertEquals(1, Calendar.getWeekday(1, 11, 2021));
+		assertEquals(3, Calendar.getWeekday(1, 1, 2020));
+		assertEquals(6, Calendar.getWeekday(1, 2, 2020));
+		assertEquals(7, Calendar.getWeekday(1, 3, 2020));
+
 	}
 
 }

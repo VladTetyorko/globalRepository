@@ -1,5 +1,7 @@
 package com.test.services;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -11,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.test.calendar.Calendar;
 import com.test.calendar.entities.Date;
 import com.test.calendar.exeptions.IlegalDateException;
+import com.test.calendar.exeptions.IlegalMonthException;
 import com.test.repositories.DateRepository;
 
 @Service
@@ -35,7 +38,7 @@ public class DateService {
 			logger.info("Date {} saved", saved.toString());
 			return saved;
 		} catch (Exception e) {
-			logger.error(e.toString());
+			logger.warn(e.toString());
 		}
 		return saved;
 	}
@@ -56,38 +59,9 @@ public class DateService {
 	@Transactional
 	public List<Date> findAll() {
 		if (logger.isDebugEnabled())
-			logger.debug("Searching for all dates");
+			logger.debug("Searching for all dates with tasks");
 		List<Date> foundedList = repository.findAll();
 		return foundedList;
-	}
-
-	@Transactional
-	public List<Date> findMonth(int month, int year) {
-		if (logger.isDebugEnabled())
-			logger.debug("Searching for month #{} ({} year) calendar", month, year);
-		List<Date> foundedList = repository.findByMonthAndYear(month, year);
-		if (!foundedList.isEmpty())
-			foundedList = calendar.fillCalendar(foundedList);
-		else
-			foundedList = calendar.fillCalendar(month, year);
-		return foundedList;
-	}
-
-	@Transactional
-	public Date findDay(int day, int month, int year) {
-		if (logger.isDebugEnabled())
-			logger.debug("Searching for {}.{}.{} day", day, month, year);
-		if (day < 0 || day > Calendar.getNumberOfDays(month, year) || month < 0 || month > 12) {
-			logger.warn("Illegal date!", new IlegalDateException(month, year));
-			throw new IlegalDateException(month, year);
-		}
-		Optional<Date> founded = repository.findByDayAndMonthAndYear(day, month, year);
-		if (founded.isPresent()) {
-			logger.info("Day with id={} was founded", founded.get().getID());
-			return founded.get();
-		} else
-			logger.info("Was created new day");
-		return new Date(day, month, year);
 	}
 
 	@Transactional
@@ -99,9 +73,98 @@ public class DateService {
 			logger.info("Day with id={} was deleted", id);
 			return true;
 		} catch (Exception e) {
-			logger.warn(e.toString());
+			logger.warn("Day with id={} does not exsist" + e.toString(), id);
 			return false;
 		}
+	}
+
+	@Transactional
+	public List<Date> findMonth(int month, int year) {
+		if (logger.isDebugEnabled())
+			logger.debug("Searching for month #{} ({} year) calendar", month, year);
+		if (month < 0 || month > 12) {
+			logger.warn("Illegal date!", new IlegalMonthException(month, year));
+			throw new IlegalMonthException(month, year);
+		}
+		List<Date> foundedList = repository.findByMonthAndYear(month, year);
+		if (!foundedList.isEmpty()) {
+			logger.debug("Some days was found, filling another. month={},{}", month, year);
+			foundedList = calendar.fillCalendar(foundedList);
+		} else {
+			logger.debug("No days was found in month={}, {}", month, year);
+			foundedList = calendar.fillCalendar(month, year);
+		}
+		logger.info("Mounth #{},{} found successful", month, year);
+		return foundedList;
+	}
+
+	@Transactional
+	public Date findDay(int day, int month, int year) {
+		if (logger.isDebugEnabled())
+			logger.debug("Searching for {}.{}.{} day", day, month, year);
+
+		if (day < 0 || day > Calendar.getNumberOfDays(month, year) || month < 0 || month > 12) {
+			logger.warn("Illegal date!", new IlegalDateException(day, month, year).getMessage());
+			throw new IlegalDateException(day, month, year);
+		}
+
+		Optional<Date> founded = repository.findByDayAndMonthAndYear(day, month, year);
+		if (founded.isPresent()) {
+			logger.info("Day with id={} was founded", founded.get().getID());
+			return founded.get();
+		} else
+			logger.info("Was created new day");
+		return new Date(day, month, year);
+	}
+
+	public List<Date> findLastDaysInPreviousMonth(int month, int year) {
+		int neededYear = 0;
+		int neededMonth = 0;
+		List<Date> list = new ArrayList<Date>();
+		if (month == 1) {
+			neededYear = year - 1;
+			neededMonth = 12;
+		} else {
+			neededYear = year;
+			neededMonth = month - 1;
+		}
+		int dayCount = Calendar.getNumberOfDays(neededMonth, neededYear);
+		int firstDayOfCurrent = Calendar.getWeekday(1, month, year);
+		int i = 0;
+		while (i < firstDayOfCurrent - 1) {
+			Date d = findDay(dayCount, neededMonth, neededYear);
+			list.add(d);
+			dayCount--;
+			i++;
+		}
+		Collections.sort(list);
+		return list;
+	}
+
+	@Transactional
+	public List<Date> findFirstDaysInPreviousMonth(int month, int year) {
+		int neededYear = 0;
+		int neededMonth = 0;
+		List<Date> list = new ArrayList<Date>();
+		if (month == 12) {
+			neededYear = year + 1;
+			neededMonth = 1;
+		} else {
+			neededYear = year;
+			neededMonth = month + 1;
+		}
+		int lastDayInCurrent = Calendar.getNumberOfDays(month, year);
+		int firstDayOfNext = Calendar.getWeekday(lastDayInCurrent, month, year);
+		int i = firstDayOfNext;
+		int dayCount = 1;
+		while (i < 7) {
+			Date d = findDay(dayCount, neededMonth, neededYear);
+			list.add(d);
+			dayCount++;
+			i++;
+		}
+		Collections.sort(list);
+		return list;
 	}
 
 }

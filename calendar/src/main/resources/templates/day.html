@@ -4,15 +4,15 @@
       <title>Day</title>
       <link th:href="@{/css/style.css}" href="../../static/css/style.css"
          rel="stylesheet" />
+<link th:rel="stylesheet" th:href="@{/webjars/bootstrap/4.0.0-2/css/bootstrap.min.css}" />
+</head>
    <body>
       <div class="container">
-      <h2>Day</h2>
       <div th:object = "${date}" class="box">
-         <p>
          <span th:utext="*{stringMonth}"></span>
-          <b>,</b>
+          <b> </b>
           <span th:utext="*{day}"></span>
-           <b>.</b>
+           <b>,</b>
           <span th:utext="*{year}"></span>
         </p>
       </div>
@@ -20,17 +20,20 @@
          <table class="table table-bordered">
             <tbody>
                <tr th:each="task, state : ${date.tasks}" th:object = "${date}">
+                  <td th:utext="${task.time}">time</td>
                   <td th:utext="${task.name}">day</td>
-                  <td th:utext="${task.time}">day</td>
-                  <td><a th:href="@{'/calendar/'+${date.year}+'/'+${date.month}+'/'+${date.day}+'/'+editTask+'/'+${task.ID}}" class="btn btn-default">Edit</a></td>
+                  <td><a th:href="@{'/'+${date.year}+'/'+${date.month}+'/'+${date.day}+'/'+editTask+'/'+${task.ID}}" class="btn btn-light">Edit</a></td>
                   <td><a class="btn btn-danger"
-                     th:href="@{'/calendar/'+${date.year}+'/'+${date.month}+'/'+${date.day}+'/'+deleteTask+'/'+${task.ID}}">Delete</a></td>
+                     th:href="@{'/'+${date.year}+'/'+${date.month}+'/'+${date.day}+'/'+deleteTask+'/'+${task.ID}}">Delete</a></td>
                </tr>
             </tbody>
          </table>
       </div>
+      <div th:if="${#lists.isEmpty(date.tasks)}">
+      <p>There are no any tasks yet</p>
+      </div>
       <a class="btn btn-default"
-         th:href="@{'/calendar/'+${date.year}+'/'+${date.month}+'/'+${date.day}+'/'+createTask+'/'}">Create new</a>
+         th:href="@{'/'+${date.year}+'/'+${date.month}+'/'+${date.day}+'/'+createTask+'/'}">Create new</a>
    </body>
 </html>
 
