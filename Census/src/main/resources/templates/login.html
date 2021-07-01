@@ -1,0 +1,44 @@
+<html>
+<head>
+<title>Login</title>
+<link rel="stylesheet"
+	href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+	integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+	crossorigin="anonymous">
+<link th:href="@{/css/style.css}" href="../../static/css/style.css"
+	rel="stylesheet" />
+</head>
+<body style="background-color: rgb(19, 132, 150);"
+	onload='document.loginForm.username.focus();'>
+	<div class="login-centre">
+		<form class="form-horizontal" name='login' action="/login"
+			method='POST'>
+			<div class="form-group">
+				<p style="font-size: 250%">Login</p>
+				<div th:if="${errorMessge != null}">
+					<div style="color: red; font-weight: bold; margin: 30px 0px;"
+						th:text="${errorMessge}"></div>
+				</div>
+				<div class="login-labels">
+					<label class="col-sm-2 control-label">UserName:</label> <input
+						class="col-sm-10" type='text' name='username'
+						placeholder="username"> <label
+						class="col-sm-2 control-label">Password:</label> <input
+						class="col-sm-10" type='password' name='password'
+						placeholder="password" />
+				</div>
+				<div>
+					<button class="btn btn-info" type="submit" />
+					Submit
+					</button>
+				</div>
+				<div>
+					<a href="/login?create=true">I don't have account</a>
+				</div>
+			</div>
+			<input type="hidden" name="${_csrf.parameterName}"
+				value="${_csrf.token}" />
+		</form>
+	</div>
+</body>
+</html>

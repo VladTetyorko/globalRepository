@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<title>Courses</title>
+	<th:block th:include="layout/header"></th:block>
+</head>
+</head>
+
+<body>
+	<div>
+		<table class="table table-bordered">
+			<thead>
+				<tr>
+					<th>Name</th>
+					<th>Items</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr th:object="${loginedPerson}">
+					<td class="th_main"><span th:text="${loginedPerson.username}"> Name </span></td>
+					<td><a class="btn btn-info"
+							th:href="@{/items/my}">Get items</a>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+</div>
+</body>
+
+</html>

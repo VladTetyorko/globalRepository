@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+<title>Categories</title>
+<th:block th:include="layout/header"></th:block>
+<th:block th:include="layout/searchAndPage"></th:block>
+</head>
+<body>
+	<table class="table table-bordered">
+		<thead>
+			<tr>
+				<th>Name</th>
+				<th colspan="2"><a class="btn btn-primary btn-block"
+						th:href="@{'/categories/create'}">
+						<span>Add Category</span>
+					</a></th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr th:if="${categories.empty}">
+				<td colspan="3">No categories available...</td>
+			</tr>
+			<tr th:each="category : ${categories}">
+				<td class="th_main"><a class="btn btn-light"
+					th:href="@{/items/categories/{name} (name=${category.name})}"><span
+						th:text="${category.name}"> Name </span></a></td>
+				<td><a class="btn btn-info"
+					th:href="@{/categories/{id} (id=${category.id})}">Edit</a></td>
+				<td><a class="btn btn-danger"
+					th:href="@{/categories/delete/{id} (id=${category.id})}">Delete</a></td>
+			</tr>
+		</tbody>
+	</table>
+</body>
+</html>

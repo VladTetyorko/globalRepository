@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+<title>Locations</title>
+<th:block th:include="layout/header"></th:block>
+<th:block th:include="layout/searchAndPage"></th:block>
+</head>
+
+<body>
+	<table class="table table-bordered">
+		<thead>
+			<tr>
+				<th>Name</th>
+				<th colspan="2"><a class="btn btn-primary btn-block"
+						th:href="@{'/locations/create'}">
+						<span>Add Location</span>
+					</a></th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr th:if="${locations.empty}">
+				<td colspan="3">No locations available...</td>
+			</tr>
+			<tr th:each="location : ${locations}">
+				<td class="th_main"><a class=" btn btn-light"
+					th:href="@{/items/locations/{name} (name=${location.name})}"> <span
+						th:text="${location.name}"> Name </span>
+				</a></td>
+				<td><a class="btn btn-info"
+					th:href="@{/locations/{id} (id=${location.id})}">Edit</a></td>
+				<td><a class="btn btn-danger"
+					th:href="@{/locations/delete/{id} (id=${location.id})}">Delete</a>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</body>
+</html>

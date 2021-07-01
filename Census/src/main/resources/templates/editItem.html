@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head lang="en">
+<title>Edit Item</title>
+<th:block th:include="layout/header"></th:block>
+</head>
+<body>
+	<div class="container">
+		<h2>Edit Item</h2>
+		<div>
+			<form class="form-horizontal" th:object="${item}"
+				th:action="@{/items/save}" method="post">
+				<div class="form-group">
+					<div class="col-sm-10">
+						<input type="hidden" class="form-control" th:field="*{id}" />
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-sm-2 control-label">Name:</label>
+					<div class="col-sm-10">
+						<input id="nameTxt" type="text" class="form-control"
+							th:field="*{name}" onkeyup='saveValue(this);' />
+						<td th:if="${#fields.hasErrors('name')}" th:errors="*{name}">Name
+							Error</td>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-sm-2 control-label">Description:</label>
+					<div class="col-sm-10">
+						<input id="descTxt" type="text" class="form-control"
+							th:field="*{description}" onkeyup='saveValue(this);' />
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-sm-2 control-label">Category:</label> <input
+						id="searchCategoryInput" th:value="${catPart}" type="text"
+						onclick="inputCategory()" placeholder="Search for names..">
+					<span id="searchCategoryValidation">Insert part of category
+						name here</span> <select id="search-category" th:field="*{categoryId}">
+						<option th:each="category : ${categories}"
+							th:value="${category.id}" th:text="${category.name}"></option>
+					</select>
+				</div>
+				<div class="form-group">
+					<label class="col-sm-2 control-label">Location:</label> <input
+						id="searchLocationInput" th:value="${locPart}" type="text"
+						onclick="inputLocation()" placeholder="Search for names..">
+					<span id="searchLocationValidation">Insert part of location
+						name here</span> <select id="search-location" th:field="*{locationId}"
+						onchange="SaveLocation()">
+						<option th:each="location : ${locations}"
+							th:value="${location.id}" th:text="${location.name}"></option>
+					</select>
+				</div>
+				<div class="form-group">
+					<label class="col-sm-2 control-label">Owner:</label> <select
+						id="select-state" placeholder="Pick a state..."
+						th:field="*{ownerId}">
+						<option th:each="user : ${users}" th:value="${user.id}"
+							th:text="${user.username}"></option>
+					</select>
+				</div>
+				<div class="form-group">
+					<div class="col-sm-2">
+						<button type="submit" class="btn btn-primary"
+							onclick="clearStorage()">Save</button>
+						<button type="reset" class="btn btn-danger"
+							onclick="clearStorageAndBack()">Cancel</button>
+					</div>
+				</div>
+			</form>
+		</div>
+	</div>
+	<script>
+		$(document).ready(function() {
+			$('select').selectize({
+				create : true,
+				sortField : 'text'
+			});
+		});
+	</script>
+	<script type="text/javascript">
+		if (document.getElementById("nameTxt").value == "")
+			document.getElementById("nameTxt").value = getSavedValue("nameTxt");
+		if (document.getElementById("descTxt").value == "")
+			document.getElementById("descTxt").value = getSavedValue("descTxt");
+		if (document.getElementById('search-location').options.length == 0)
+			addLocationCashed();
+		if (document.getElementById('search-location').options[0].text != localStorage
+				.getItem("location-text"))
+			SaveLocation()
+		if (document.getElementById('search-category').options.length == 0)
+			addCategoryCashed();
+		if (document.getElementById('search-category').options[0].text != localStorage
+				.getItem("category-text"))
+			SaveCategory()
+
+		function addLocationCashed() {
+			var o = new Option(localStorage.getItem("location-text"),
+					localStorage.getItem("location-value"));
+			$(o).html(localStorage.getItem("location-text"));
+			$("#search-location").append(o);
+		}
+		
+		function addCategoryCashed() {
+			var o = new Option(localStorage.getItem("category-text"),
+					localStorage.getItem("category-value"));
+			$(o).html(localStorage.getItem("category-text"));
+			$("#search-category").append(o);
+		}
+
+		function SaveLocation() {
+			var selLoc = document.getElementById("search-location");
+			var optLoc = selLoc.options[selLoc.selectedIndex];
+			localStorage.setItem("location-text", optLoc.text);
+			localStorage.setItem("location-value", optLoc.value);
+		}
+
+		function SaveCategory() {
+			var selCat = document.getElementById("search-category");
+			var optCat = selCat.options[selCat.selectedIndex];
+			localStorage.setItem("category-text", optCat.text);
+			localStorage.setItem("category-value", optCat.value);
+		}
+
+		function saveValue(e) {
+			var id = e.id;
+			var val = e.value;
+			localStorage.setItem(id, val);
+		}
+
+		function getSavedValue(v) {
+			if (!localStorage.getItem(v)) {
+				return "";
+			}
+			return localStorage.getItem(v);
+		}
+
+		function clearStorage() {
+			window.localStorage.clear();
+		}
+	</script>
+
+</body>
+</html>

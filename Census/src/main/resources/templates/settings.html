@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Settings</title>
+<th:block th:include="layout/header"></th:block>
+</head>
+<body>
+	<form class="form-horizontal" th:object="${form}"
+		th:action="@{/settings/save}" method="post">
+		<div class="form-group">
+			<th:block th:each="setting, iterator: *{list}">
+				<input type="hidden" th:field="*{list[__${iterator.index}__].id}"
+					th:value="${setting.id}" />
+				<input type="hidden"
+					th:field="*{list[__${iterator.index}__].userId}"
+					th:value="${setting.userId}" />
+				<input type="hidden"
+					th:field="*{list[__${iterator.index}__].globalSettingId}"
+					th:value="${setting.globalSettingId}" />
+				<label class="col-sm-2 control-label"
+					th:text="*{list[__${iterator.index}__].globalSettingName}"></label>
+				<div class="col-sm-10">
+					<input th:field="*{list[__${iterator.index}__].value}"
+						th:value="${setting.value}" />
+				</div>
+			</th:block>
+		</div>
+		<div class="form-group">
+			<div class="col-sm-2">
+				<button class="btn btn-info" type="submit">Modify</button>
+			</div>
+		</div>
+	</form>
+</body>
+</html>

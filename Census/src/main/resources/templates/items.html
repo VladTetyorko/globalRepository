@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+<title>Items</title>
+<th:block th:include="layout/header"></th:block>
+<th:block th:include="layout/searchAndPage"></th:block>
+</head>
+<body>
+	<table class="table table-bordered table-striped" id="itemTable">
+		<thead>
+			<tr>
+				<th>Name</th>
+				<th>Description</th>
+				<th>Category</th>
+				<th>Location</th>
+				<th>Owner</th>
+				<th colspan="2"><button class="btn btn-primary btn-block"
+						onclick="addItem()">
+						<span>Add item</span>
+					</button></th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr th:if="${items.empty}">
+				<td colspan="5">No Items Available</td>
+			</tr>
+			<tr th:each="item : ${items}">
+				<td><span th:text="${item.name}"> Name </span></td>
+				<td><span th:text="${item.description}"> Description </span></td>
+				<td><span th:text="${item.category.name}"> Category </span></td>
+				<td><span th:text="${item.location.name}"> Location </span></td>
+				<td><span th:text="${item.owner.username}"> Owner </span></td>
+				<td><a class="btn btn-info"
+					th:href="@{/items/{id} (id=${item.Id})}">Edit</a></td>
+				<td>
+					<button class="btn btn-danger"
+					 th:data-parameter1="${item.Id}"
+						th:data-parameter2="${item.name}"
+						th:onclick="tryDelete(this.getAttribute('data-parameter1'),this.getAttribute('data-parameter2'));"
+						>Delete</button>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+	<script>
+		function tryDelete(id,name) {
+			var r = confirm("You hant to delete item '" + name + "'?");
+			if (r == true) {
+				  window.location.href ="/items/delete/"+id;
+			}
+		}
+	</script>
+
+</body>
+</html>

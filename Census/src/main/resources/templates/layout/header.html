@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head lang="en">
+<script src="/webjars/jquery/3.6.0/jquery.min.js"></script>
+<script src="/webjars/bootstrap/4.6.0/js/bootstrap.min.js"></script>
+<link rel="stylesheet"
+	href="/webjars/bootstrap/4.6.0/css/bootstrap.min.css" />
+<script th:src="@{/scrypts/scrypts.js}"></script>
+<link th:href="@{/css/style.css}" href="../../static/css/style.css"
+	rel="stylesheet" />
+<script
+	src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script
+	src="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.12.6/js/standalone/selectize.min.js"
+	integrity="sha256-+C0A5Ilqmu4QcSPxrlGpaZxJ04VjsRjKu+G82kl5UJk="
+	crossorigin="anonymous"></script>
+<link rel="stylesheet"
+	href="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.12.6/css/selectize.bootstrap3.min.css"
+	integrity="sha256-ze/OEYGcFbPRmvCnrSeKbRTtjG4vGLHXgOqsyLFTRjg="
+	crossorigin="anonymous" />
+</head>
+<body>
+	<div class="container">
+		<div th:fragment="header">
+			<ul>
+				<li><a class="navbar-main" href="#" th:href="@{/items/my}">Home</a></li>
+				<li><a th:href="@{/categories}">Categories</a></li>
+				<li><a th:href="@{/locations}">Locations</a></li>
+				<li class="navbar-main-logout"><a th:href="@{/logout}">Logout</a></li>
+				<li class="navbar-main-settings"><a th:href="@{/me/settings}">Settings</a></li>
+			</ul>
+		</div>
+	</div>
+</body>
+
+</html>

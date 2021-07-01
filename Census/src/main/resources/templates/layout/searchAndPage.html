@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+	<div class="table_nav">
+		<form class="form form-center">
+			<label>Get page</label> <select onchange="getPage(value)">
+				<option th:each="i: ${#numbers.sequence(1, pages)}" th:text="${i}"
+					th:value="${i}" th:selected="${i==currentPage}"></option>
+			</select>
+			<div>
+				<input type="text" id="search-input"
+					placeholder="Search for names.." th:value="${namePart}"
+					onclick="searchPage()"> <input type="text"
+					id="search-byButton" placeholder="Search for names.."
+					th:value="${namePart}">
+
+				<button type="button" class="btn btn-info" id="searchButton"
+					onclick="searchByButton()">Search</button>
+				<div>
+					<span id="searchValidation"></span>
+				</div>
+				<div class="form-check form-switch">
+					<input class="form-check-input" type="checkbox"
+						id="flexSwitchCheckDefault" onchange="saveCheckBox(this.checked)">
+					<label class="form-check-label" for="flexSwitchCheckDefault">Search
+						with button</label>
+				</div>
+			</div>
+			<button type="button" class="btn btn-success" onclick="report()">
+				<span>Download report</span>
+			</button>
+			<script>
+			function report(){
+				 var urlParams = new URLSearchParams(window.location.search);
+				 urlParams.set('report','true');
+				 window.location.search = urlParams;
+				}
+			</script>
+		</form>
+	</div>
+</body>
+<script type="text/javascript">
+	if (localStorage.getItem("checkBox") == "true") {
+		document.getElementById("flexSwitchCheckDefault").checked = true;
+		var button = document.getElementById("searchButton");
+		var inputB = document.getElementById("search-byButton");
+		var inputI = document.getElementById("search-input");
+		inputI.style.display="none";
+		button.style.display = "inline-block";
+		inputB.style.display="inline-block";
+		inputB.click();
+	} else {
+		var button = document.getElementById("searchButton");
+		var inputB = document.getElementById("search-byButton");
+		var inputI = document.getElementById("search-input");
+		console.log(inputI);
+		inputI.style.display="inline-block";
+		button.style.display = "none";
+		inputB.style.display="none";
+		inputI.click();
+	}
+	
+	function saveCheckBox(e) {
+		localStorage.setItem("checkBox", e);
+		var button = document.getElementById("searchButton");
+		var inputB = document.getElementById("search-byButton");
+		var inputI = document.getElementById("search-input");
+		if (e == true) {
+			inputI.style.display="none";
+			button.style.display = "inline-block";
+			inputB.style.display="inline-block";;
+		} else{
+			inputI.style.display="inline-block";
+			button.style.display = "none";
+			inputB.style.display="none";
+		}
+	}
+	
+	function searchPage(){
+		var input = document.getElementById("search-input");
+		input.oninput = function() {
+			var res = input.value.toString();
+			var currentHref = new URL(window.location.href);
+			currentHref.searchParams.set('namePart', res);
+			currentHref.searchParams.set('page', 1);
+			if(res==""){
+	            currentHref.searchParams.delete('page');	
+	            currentHref.searchParams.delete('namePart');
+				window.location.href = currentHref;
+			} 
+			else if (res.length < 3) 
+	            document.getElementById('searchValidation').innerHTML = "Please, enter at least 3 letters of name";
+			else
+			    window.location.href = currentHref;
+		};
+	}
+
+	function searchByButton() {
+		var input = document.getElementById("search-byButton");
+		var res = input.value.toString();
+		var currentHref = new URL(window.location.href);
+		currentHref.searchParams.set('namePart', res);
+		currentHref.searchParams.set('page', 1);
+		if(res==""){
+            currentHref.searchParams.delete('page');	
+            currentHref.searchParams.delete('namePart');
+		}
+		window.location.href = currentHref;
+	}
+</script>
+</html>

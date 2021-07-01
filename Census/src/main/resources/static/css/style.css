@@ -1,0 +1,115 @@
+body{
+	margin: 0;
+  padding: 0;
+	height: 100%;
+	width: 100%;
+}
+
+.table {
+	text-align: center;
+	width: 80%;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+.th_main {
+	width: 80%;
+}
+
+pan {
+	background-color: #b484c2;
+}
+
+ul {
+	width: 100%;
+	list-style-type: none;
+	margin: 0;
+	padding: 0;
+	overflow: hidden;
+	background-color: #333;
+}
+
+li {
+	float: left;
+}
+
+li a {
+	display: block;
+	color: #eed1ff;
+	text-align: center;
+	padding: 16px;
+	text-decoration: none;
+}
+
+li a:hover {
+	background-color: #111;
+}
+
+li a:active {
+	background-color: #755079;
+}
+
+.navbar-main {
+	color: #b906ac;
+}
+
+.navbar-main-settings{
+	float: right;
+}
+
+.navbar-main-logout{
+	float: right;
+}
+
+
+.login-centre{
+	width:40%;
+    margin-left: auto;
+	margin-top: auto;
+	margin-bottom: auto;
+	margin-right: auto;
+	text-align: center;
+}
+
+.form-group{
+	background-color: white; 
+	border: 10px solid white;
+	text-align: center;
+}
+
+.btn-light{
+	width: 100%;
+}
+
+.table_nav{
+	text-align: center;
+	width: 80%;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+.form-horizontal{
+	margin-left: auto;
+	margin-top: auto;
+	margin-bottom: auto;
+	margin-right: auto;
+	text-align: center;
+}
+
+.col-sm-10{
+	margin-left: auto;
+	margin-right: auto;
+}
+
+.col-sm-2{
+	margin-left: auto;
+	margin-right: auto;
+	display: inline;
+}
+
+.center-image {
+	display: block;
+	margin-left: auto;
+	margin-right: auto;
+	width: 30%;
+}
