@@ -83,6 +83,20 @@ public class CustomSettingService {
 	}
 
 	@Transactional
+	public List<SettingValue> findForUserAndLanguage(User user, String language) {
+		List<SettingValue> founded = new ArrayList<SettingValue>();
+		if (logger.isDebugEnabled())
+			logger.debug("Searching settings for user {} and language {}", user.getUsername(), language);
+		founded = repository.findByUserAndGlobalSetting_Translations_Language(user, language);
+		if (!founded.isEmpty())
+			logger.info("Settings for user {} wint lang {} was found successfull", user.getUsername(), language);
+		else {
+			logger.warn("Settings for user {} with lang{} doesnt exsist", user.getUsername(), language);
+		}
+		return founded;
+	}
+
+	@Transactional
 	public List<SettingValue> save(List<SettingValue> list) {
 		list.forEach(s -> {
 			System.out.print(s + "/n/n/n");
@@ -90,4 +104,5 @@ public class CustomSettingService {
 		});
 		return list;
 	}
+
 }

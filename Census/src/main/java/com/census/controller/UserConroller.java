@@ -44,17 +44,6 @@ public class UserConroller {
 	public String loginPage(@RequestParam(value = "error", required = false) String error,
 			@RequestParam(value = "logout", required = false) String logout,
 			@RequestParam(value = "create", required = false) String create, Model model) {
-		String errorMessge = null;
-		if (error != null) {
-			errorMessge = "Username or Password is incorrect !!";
-		}
-		if (logout != null) {
-			errorMessge = "You have been successfully logged out !!";
-		}
-		if (create != null) {
-			errorMessge = "Please contact the administrator";
-		}
-		model.addAttribute("errorMessge", errorMessge);
 		return "login";
 	}
 

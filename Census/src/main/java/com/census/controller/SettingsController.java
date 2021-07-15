@@ -2,8 +2,10 @@ package com.census.controller;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -41,17 +43,20 @@ public class SettingsController {
 	@RequestMapping(value = "/me/settings")
 	public String settings(Model model) {
 		User user = getCurrentUser();
+		Locale locale = LocaleContextHolder.getLocale();
+		String language = locale.getLanguage();
 		List<SettingValue> listOfSettings = customSettingService.findForUser(user);
 		List<Setting> globalSettings = globalSettingService.findAll();
 		List<SettingValueForm> listOfSettingForms = new ArrayList<SettingValueForm>();
+		System.out.print(globalSettings);
 		SettingValueList form = new SettingValueList();
 		globalSettings.forEach(s -> {
-			Optional<SettingValue> exsistefSetting = listOfSettings.stream().filter(c -> c.getGlobalSetting().equals(s))
+			Optional<SettingValue> exsistedSetting = listOfSettings.stream().filter(c -> c.getGlobalSetting().equals(s))
 					.findAny();
-			if (exsistefSetting.isPresent())
-				listOfSettingForms.add(SettingValueForm.format(exsistefSetting.get()));
+			if (exsistedSetting.isPresent())
+				listOfSettingForms.add(SettingValueForm.format(exsistedSetting.get(), language));
 			else
-				listOfSettingForms.add(SettingValueForm.format(new SettingValue(s, user, 10)));
+				listOfSettingForms.add(SettingValueForm.format(new SettingValue(s, user, 10), language));
 		});
 		form.setList(listOfSettingForms);
 		model.addAttribute("form", form);

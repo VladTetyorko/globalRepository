@@ -1,5 +1,6 @@
 package com.census.services;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -60,7 +61,7 @@ public class GlobalSettingService {
 	public List<Setting> findAll() {
 		List<Setting> list = null;
 		if (logger.isDebugEnabled())
-			logger.debug("Searching all categories");
+			logger.debug("Searching all settings");
 		list = repository.findAll();
 		logger.info("Setting list was found");
 		return list;
@@ -82,9 +83,18 @@ public class GlobalSettingService {
 	public Optional<Setting> findByPartOfName(String partOfName) {
 		Optional<Setting> list;
 		if (logger.isDebugEnabled())
-			logger.debug("Searching all categories contains {}", partOfName);
+			logger.debug("Searching all settings contains {}", partOfName);
 		list = repository.findByName(partOfName);
 		logger.info("Setting list contains '{}' was found", partOfName);
+		return list;
+	}
+
+	public List<Setting> findByLanguage(String language) {
+		List<Setting> list = new ArrayList<Setting>();
+		if (logger.isDebugEnabled())
+			logger.debug("Searching all settings on {} language", language);
+		list = repository.findByTranslations_Language(language);
+		logger.info("Setting list contains '{}' was found", language);
 		return list;
 	}
 }

@@ -3,12 +3,14 @@ package com.census.controller;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 
 import javax.validation.Valid;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
@@ -57,132 +59,60 @@ public class ItemController {
 		this.reporter = reporter;
 	}
 
-	@RequestMapping(value = "/items/save", method = RequestMethod.POST)
-	public String saveItem(Model model, @Valid @ModelAttribute("item") ItemForm form, BindingResult bindingResult) {
-		logger.info("Html page= /locations/save");
-		if (bindingResult.hasErrors()) {
-			model.addAttribute("locations", locationService.findAll());
-			model.addAttribute("categories", categoryService.findAll());
-			model.addAttribute("users", userService.findAll());
-			logger.warn("Got errors {}", bindingResult.getAllErrors());
-			return "editItem";
-		}
-		try {
-			Item item = formatter.format(form);
-			itemService.save(item);
-		} catch (SQLUnexpectedException e) {
-			model.addAttribute("errorMessage", e.getLocalizedMessage());
-			model.addAttribute("locations", locationService.findAll());
-			model.addAttribute("categories", categoryService.findAll());
-			model.addAttribute("users", userService.findAll());
-			logger.warn("Got unexpected errors {}", e.getLocalizedMessage());
-			return "editItem";
-		}
-		return "redirect:/items/my";
-	}
-
-	@RequestMapping(value = "/items/{id}", method = RequestMethod.GET)
-	public String editItem(Model model, @PathVariable(name = "id") int id,
-			@RequestParam(name = "LocationNamePart", required = false) String locationNamePart,
-			@RequestParam(name = "CategoryNamePart", required = false) String categoryNamePart) {
-		logger.info("Html page= /items/{}", id);
-		Optional<Item> neededItem = itemService.find(id);
-		ItemForm form = ItemForm.format(neededItem.get());
-		if (neededItem.isPresent()) {
-			model.addAttribute("item", form);
-			if (locationNamePart == null)
-				model.addAttribute("locations",
-						locationService.findByPartOfName(neededItem.get().getLocation().getName()));
-			if (categoryNamePart == null)
-				model.addAttribute("categories",
-						categoryService.findByPartOfName(neededItem.get().getCategory().getName()));
-			model.addAttribute("users", userService.findAll());
-			List<SettingValue> settings = getCurrentUser().getSettings();
-			if (locationNamePart != null) {
-				model.addAttribute("locPart", locationNamePart);
-			}
-			if (categoryNamePart != null) {
-				model.addAttribute("catPart", categoryNamePart);
-			}
-			addParametersOnList(model, settings, locationNamePart, categoryNamePart);
+	@RequestMapping(value = "/", method = RequestMethod.GET)
+	public String getAllItems(Model model, @RequestParam(value = "page", defaultValue = "1") int page,
+			@RequestParam(value = "namePart", required = false) String namePart,
+			@RequestParam(value = "byDesc", required = false) String byDesk,
+			@RequestParam(value = "report", required = false) String report) {
+		logger.info("Html page= /");
+		List<Item> list = new ArrayList<Item>();
+		User user = getCurrentUser();
+		if (namePart == null)
+			list = itemService.findAll();
+		else if (byDesk == null) {
+			list = itemService.findByPartOfName(namePart);
 		} else
-			return "redirect:/items/my";
-		return "editItem";
-	}
-
-	@RequestMapping(value = "/items/add", method = RequestMethod.GET)
-	public String addItem(Model model,
-			@RequestParam(name = "LocationNamePart", required = false) String locationNamePart,
-			@RequestParam(name = "CategoryNamePart", required = false) String categoryNamePart) {
-		logger.info("Html page= /items/add");
-		ItemForm form = new ItemForm();
-		User user = getCurrentUser();
-		form.setOwnerId(user.getId());
-		model.addAttribute("item", form);
+			list = itemService.findByPartOfNameAndDesc(namePart);
 		List<SettingValue> settings = user.getSettings();
-		addParametersOnList(model, settings, locationNamePart, categoryNamePart);
-		model.addAttribute("users", userService.findAll());
-		model.addAttribute("locPart", locationNamePart);
-		model.addAttribute("catPart", categoryNamePart);
-		return "editItem";
-	}
-
-	@RequestMapping(value = "/items/categories/{name}/add", method = RequestMethod.GET)
-	public String addItemInCategory(Model model, @PathVariable(name = "name") String name,
-			@RequestParam(name = "LocationNamePart", required = false) String locationNamePart,
-			@RequestParam(name = "CategoryNamePart", required = false) String categoryNamePart) {
-		logger.info("Html page= /items/add");
-		ItemForm form = new ItemForm();
-		Category category = categoryService.findByName(name).get();
-		User user = getCurrentUser();
-		form.setOwnerId(user.getId());
-		form.setCategoryId(category.getId());
-		model.addAttribute("item", form);
-		List<SettingValue> settings = user.getSettings();
-		addParametersOnList(model, settings, locationNamePart, categoryNamePart);
-		model.addAttribute("users", userService.findAll());
-		model.addAttribute("locPart", locationNamePart);
-		model.addAttribute("catPart", categoryNamePart);
-		return "editItem";
-	}
-
-	@RequestMapping(value = "/items/locations/{name}/add", method = RequestMethod.GET)
-	public String addItemInLocation(Model model, @PathVariable(name = "name") String name,
-			@RequestParam(name = "LocationNamePart", required = false) String locationNamePart,
-			@RequestParam(name = "CategoryNamePart", required = false) String categoryNamePart) {
-		logger.info("Html page= /items/add");
-		ItemForm form = new ItemForm();
-		Location location = locationService.findByName(name).get();
-		User user = getCurrentUser();
-		form.setOwnerId(user.getId());
-		form.setLocationId(location.getId());
-		model.addAttribute("item", form);
-		List<SettingValue> settings = user.getSettings();
-		addParametersOnList(model, settings, locationNamePart, categoryNamePart);
-		if (locationNamePart == null)
-			model.addAttribute("locations", locationService.findByPartOfName(name));
-		model.addAttribute("users", userService.findAll());
-		model.addAttribute("locPart", locationNamePart);
-		model.addAttribute("catPart", categoryNamePart);
-		return "editItem";
+		int limitOnPage = getParameterOfPage(settings);
+		TableFormatter<Item> formatter = new TableFormatter<Item>();
+		Pair<Integer, List<Item>> lengthAndCurrentList = formatter.getSublist(list, limitOnPage, page);
+		model.addAttribute("namePart", namePart);
+		model.addAttribute("items", lengthAndCurrentList.list);
+		model.addAttribute("pages", lengthAndCurrentList.size);
+		model.addAttribute("currentPage", page);
+		if (report != null) {
+			File file;
+			if (namePart != null)
+				file = reporter.makeReport(lengthAndCurrentList.list);
+			else
+				file = reporter.makeReport(list);
+			return "redirect:/report?filename=" + file.toPath();
+		}
+		return "items";
 	}
 
 	@RequestMapping(value = "/items/my", method = RequestMethod.GET)
 	public String getItemsForUser(Model model, @RequestParam(value = "page", defaultValue = "1") int page,
 			@RequestParam(value = "namePart", required = false) String namePart,
+			@RequestParam(value = "byDesc", required = false) String byDesk,
 			@RequestParam(value = "report", required = false) String report) {
 		logger.info("Html page= /items/my");
 		List<Item> list = new ArrayList<Item>();
 		User user = getCurrentUser();
 		if (namePart == null)
-			list = itemService.findForUser(user);
-		else {
+			list = itemService.findAll();
+		else if (byDesk == null) {
 			list = itemService.findByPartOfNameForUser(user, namePart);
-		}
+		} else
+			list = itemService.findByPartOfNameAndDescForUser(namePart, user);
 		List<SettingValue> settings = user.getSettings();
 		int limitOnPage = getParameterOfPage(settings);
 		TableFormatter<Item> formatter = new TableFormatter<Item>();
 		Pair<Integer, List<Item>> lengthAndCurrentList = formatter.getSublist(list, limitOnPage, page);
+		Locale locale = LocaleContextHolder.getLocale();
+		String language = locale.getLanguage();
+		model.addAttribute("currentLanguage", language);
 		model.addAttribute("namePart", namePart);
 		model.addAttribute("items", lengthAndCurrentList.list);
 		model.addAttribute("pages", lengthAndCurrentList.size);
@@ -258,6 +188,120 @@ public class ItemController {
 			return "redirect:/report?filename=" + file.toPath();
 		}
 		return "items";
+	}
+
+	@RequestMapping(value = "/items/{id}", method = RequestMethod.GET)
+	public String editItem(Model model, @PathVariable(name = "id") int id,
+			@RequestParam(name = "LocationNamePart", required = false) String locationNamePart,
+			@RequestParam(name = "CategoryNamePart", required = false) String categoryNamePart) {
+		logger.info("Html page= /items/{}", id);
+		Locale locale = LocaleContextHolder.getLocale();
+		String language = locale.getLanguage();
+		Optional<Item> neededItem = itemService.find(id);
+		ItemForm form = ItemForm.format(neededItem.get(), language);
+		model.addAttribute("currentLang", language);
+		if (neededItem.isPresent()) {
+			model.addAttribute("item", form);
+			if (locationNamePart == null)
+				model.addAttribute("locations",
+						locationService.findByPartOfName(neededItem.get().getLocation().getName()));
+			if (categoryNamePart == null)
+				model.addAttribute("categories",
+						categoryService.findByPartOfName(neededItem.get().getCategory().getName()));
+			model.addAttribute("users", userService.findAll());
+			List<SettingValue> settings = getCurrentUser().getSettings();
+			if (locationNamePart != null) {
+				model.addAttribute("locPart", locationNamePart);
+			}
+			if (categoryNamePart != null) {
+				model.addAttribute("catPart", categoryNamePart);
+			}
+			addParametersOnList(model, settings, locationNamePart, categoryNamePart);
+		} else
+			return "redirect:/items/my";
+		return "editItem";
+	}
+
+	@RequestMapping(value = "/items/add", method = RequestMethod.GET)
+	public String addItem(Model model,
+			@RequestParam(name = "LocationNamePart", required = false) String locationNamePart,
+			@RequestParam(name = "CategoryNamePart", required = false) String categoryNamePart) {
+		logger.info("Html page= /items/add");
+		User user = getCurrentUser();
+		ItemForm form = ItemForm.formatEmpty();
+		model.addAttribute("item", form);
+		List<SettingValue> settings = user.getSettings();
+		addParametersOnList(model, settings, locationNamePart, categoryNamePart);
+		model.addAttribute("users", userService.findAll());
+		model.addAttribute("locPart", locationNamePart);
+		model.addAttribute("catPart", categoryNamePart);
+		return "editItem";
+	}
+
+	@RequestMapping(value = "/items/categories/{name}/add", method = RequestMethod.GET)
+	public String addItemInCategory(Model model, @PathVariable(name = "name") String name,
+			@RequestParam(name = "LocationNamePart", required = false) String locationNamePart,
+			@RequestParam(name = "CategoryNamePart", required = false) String categoryNamePart) {
+		logger.info("Html page= /items/add");
+		ItemForm form = ItemForm.formatEmpty();
+		Category category = categoryService.findByName(name).get();
+		User user = getCurrentUser();
+		form.setOwnerId(user.getId());
+		form.setCategoryId(category.getId());
+		model.addAttribute("item", form);
+		List<SettingValue> settings = user.getSettings();
+		addParametersOnList(model, settings, locationNamePart, categoryNamePart);
+		model.addAttribute("users", userService.findAll());
+		model.addAttribute("locPart", locationNamePart);
+		model.addAttribute("catPart", categoryNamePart);
+		return "editItem";
+	}
+
+	@RequestMapping(value = "/items/locations/{name}/add", method = RequestMethod.GET)
+	public String addItemInLocation(Model model, @PathVariable(name = "name") String name,
+			@RequestParam(name = "LocationNamePart", required = false) String locationNamePart,
+			@RequestParam(name = "CategoryNamePart", required = false) String categoryNamePart) {
+		logger.info("Html page= /items/add");
+		ItemForm form = ItemForm.formatEmpty();
+		Location location = locationService.findByName(name).get();
+		User user = getCurrentUser();
+		form.setOwnerId(user.getId());
+		form.setLocationId(location.getId());
+		model.addAttribute("item", form);
+		List<SettingValue> settings = user.getSettings();
+		addParametersOnList(model, settings, locationNamePart, categoryNamePart);
+		if (locationNamePart == null)
+			model.addAttribute("locations", locationService.findByPartOfName(name));
+		model.addAttribute("users", userService.findAll());
+		model.addAttribute("locPart", locationNamePart);
+		model.addAttribute("catPart", categoryNamePart);
+		return "editItem";
+	}
+
+	@RequestMapping(value = "/items/save", method = RequestMethod.POST)
+	public String saveItem(Model model, @Valid @ModelAttribute("item") ItemForm form, BindingResult bindingResult) {
+		logger.info("Html page= /locations/save");
+		if (bindingResult.hasErrors()) {
+			model.addAttribute("locations", locationService.findAll());
+			model.addAttribute("categories", categoryService.findAll());
+			model.addAttribute("users", userService.findAll());
+			logger.warn("Got errors {}", bindingResult.getAllErrors());
+			return "editItem";
+		}
+		try {
+			Locale locale = LocaleContextHolder.getLocale();
+			String language = locale.getLanguage();
+			Item item = formatter.format(form, language);
+			itemService.save(item);
+		} catch (SQLUnexpectedException e) {
+			model.addAttribute("errorMessage", e.getLocalizedMessage());
+			model.addAttribute("locations", locationService.findAll());
+			model.addAttribute("categories", categoryService.findAll());
+			model.addAttribute("users", userService.findAll());
+			logger.warn("Got unexpected errors {}", e.getLocalizedMessage());
+			return "editItem";
+		}
+		return "redirect:/items/my";
 	}
 
 	@RequestMapping(value = "/items/delete/{id}", method = RequestMethod.GET)

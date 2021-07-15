@@ -38,7 +38,6 @@ class ItemServiceTest {
 		list.add(item1);
 		list.add(item2);
 		Mockito.when(repository.findById(1)).thenReturn(Optional.of(item1));
-		Mockito.when(repository.findByName("testName2")).thenReturn(Optional.of(item2));
 		Mockito.when(repository.findByCategory(category)).thenReturn(list);
 		Mockito.when(repository.findByLocation(location)).thenReturn(list);
 	}
@@ -47,12 +46,6 @@ class ItemServiceTest {
 	final void shouldFindWhenLegalId() {
 		assertEquals(item1, service.find(1).get());
 		verify(repository, times(1)).findById(1);
-	}
-
-	@Test
-	final void shouldFindWhenLegalName() {
-		assertEquals(item2, service.findByName("testName2").get());
-		verify(repository, times(1)).findByName(Mockito.any());
 	}
 
 	@Test

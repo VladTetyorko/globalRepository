@@ -1,17 +1,25 @@
 package com.census.entities;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.SecondaryTable;
 import javax.persistence.SecondaryTables;
 import javax.persistence.Table;
-import javax.validation.constraints.NotBlank;
 
 @Entity
 @Table(name = "ITEMS")
@@ -24,12 +32,9 @@ public class Item extends TableEntity {
 	public Item() {
 	}
 
-	public Item(int id, @NotBlank(message = "Name cannot be empty.") String name, String description, Category category,
-			Location location, User owner) {
+	public Item(int id, Category category, Location location, User owner) {
 		super();
 		this.id = id;
-		this.name = name;
-		this.description = description;
 		this.category = category;
 		this.location = location;
 		this.owner = owner;
@@ -39,24 +44,23 @@ public class Item extends TableEntity {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
 
-	@NotBlank(message = "Name cannot be empty.")
 	@Column(name = "NAME")
 	private String name;
 
-	@Column(name = "Description")
-	private String description;
-
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(table = "ITEM_CATEGORY", name = "CATEGORY_ID")
 	private Category category;
 
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(table = "ITEM_LOCATION", name = "LOCATION_ID")
 	private Location location;
 
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(table = "ITEM_USER", name = "USER_ID")
 	private User owner;
+
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "item")
+	List<ItemTranslation> translations;
 
 	public int getId() {
 		return id;
@@ -72,14 +76,6 @@ public class Item extends TableEntity {
 
 	public void setName(String name) {
 		this.name = name;
-	}
-
-	public String getDescription() {
-		return description;
-	}
-
-	public void setDescription(String description) {
-		this.description = description;
 	}
 
 	public Category getCategory() {
@@ -106,17 +102,32 @@ public class Item extends TableEntity {
 		this.owner = owner;
 	}
 
+	public List<ItemTranslation> getTranslations() {
+		return translations;
+	}
+
+	public void setTranslations(List<ItemTranslation> translations) {
+		this.translations = translations;
+	}
+
+	public HashMap<String, ItemTranslation> getTranslationList() {
+		List<ItemTranslation> itemTranslations = getTranslations();
+		Map<String, ItemTranslation> map = itemTranslations.stream()
+				.collect(Collectors.toMap(ItemTranslation::getLanguage, Function.identity()));
+		return (HashMap<String, ItemTranslation>) map;
+	}
+
 	@Override
 	public String toString() {
-		return "Item [id=" + id + ", name=" + name + ", description=" + description + ", category=" + category.getName()
-				+ ", location=" + location.getName() + ", owner=" + owner.getUsername() + "]";
+		return "Item [id=" + id + "category=" + category.getName() + ", location=" + location.getName() + ", owner="
+				+ owner.getUsername() + "]";
 	}
 
 	@Override
 	public String[] toTableRow() {
 		Integer id = getId();
-		String row[] = { id.toString(), this.getName(), this.getDescription(), this.getCategory().getName(),
-				this.getLocation().getName(), this.getOwner().getUsername() };
+		String row[] = { id.toString(), this.getCategory().getName(), this.getLocation().getName(),
+				this.getOwner().getUsername() };
 		return row;
 	}
 

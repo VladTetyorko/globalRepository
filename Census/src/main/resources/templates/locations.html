@@ -11,26 +11,26 @@
 	<table class="table table-bordered">
 		<thead>
 			<tr>
-				<th>Name</th>
+				<th  th:text="#{name}"></th>
 				<th colspan="2"><a class="btn btn-primary btn-block"
 						th:href="@{'/locations/create'}">
-						<span>Add Location</span>
+						<span th:text="#{addItem}">Add Location</span>
 					</a></th>
 			</tr>
 		</thead>
 		<tbody>
 			<tr th:if="${locations.empty}">
-				<td colspan="3">No locations available...</td>
+				<td colspan="3" th:text="#{notAvaileble}"></td>
 			</tr>
 			<tr th:each="location : ${locations}">
 				<td class="th_main"><a class=" btn btn-light"
 					th:href="@{/items/locations/{name} (name=${location.name})}"> <span
-						th:text="${location.name}"> Name </span>
+						th:text="${location.name}"></span>
 				</a></td>
 				<td><a class="btn btn-info"
-					th:href="@{/locations/{id} (id=${location.id})}">Edit</a></td>
+					th:href="@{/locations/{id} (id=${location.id})}" th:text="#{editButton}"></a></td>
 				<td><a class="btn btn-danger"
-					th:href="@{/locations/delete/{id} (id=${location.id})}">Delete</a>
+					th:href="@{/locations/delete/{id} (id=${location.id})}" th:text="#{deleteButton}"></a>
 				</td>
 			</tr>
 		</tbody>

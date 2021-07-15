@@ -9,42 +9,86 @@
 	<table class="table table-bordered table-striped" id="itemTable">
 		<thead>
 			<tr>
-				<th>Name</th>
-				<th>Description</th>
-				<th>Category</th>
-				<th>Location</th>
-				<th>Owner</th>
+				<th th:text="#{name}"></th>
+				<th th:text="#{desc}"></th>
+				<th th:text="#{category}"></th>
+				<th th:text="#{location}"></th>
+				<th th:text="#{owner}"></th>
 				<th colspan="2"><button class="btn btn-primary btn-block"
 						onclick="addItem()">
-						<span>Add item</span>
+						<span th:text="#{addItem}"></span>
 					</button></th>
 			</tr>
 		</thead>
 		<tbody>
 			<tr th:if="${items.empty}">
-				<td colspan="5">No Items Available</td>
+				<td colspan="5" th:text="#{notAvaileble}"></td>
 			</tr>
 			<tr th:each="item : ${items}">
-				<td><span th:text="${item.name}"> Name </span></td>
-				<td><span th:text="${item.description}"> Description </span></td>
+				<td th:if="${item.translationList.get(currentLanguage)!=null}">
+					<div th:if="${item.translationList.get(currentLanguage).name!=''}">
+						<span th:text="${item.translationList.get(currentLanguage).name}">
+							Name </span>
+					</div>
+					<div
+						th:unless="${item.translationList.get(currentLanguage).name!=''}">
+						<span th:text="${item.translationList.get('en').name}">
+							Name </span>
+					</div>
+				</td>
+				<td th:unless="${item.translationList.get(currentLanguage)!=null}">
+					<span th:text="${item.translationList.get('en').name}"> Name
+				</span>
+				</td>
+				<td th:if="${item.translationList.get(currentLanguage)!=null}">
+					<div th:if="${item.translationList.get(currentLanguage).description!=''}">
+						<span th:text="${item.translationList.get(currentLanguage).description}">
+							Desc </span>
+					</div>
+					<div
+						th:unless="${item.translationList.get(currentLanguage).description!=''}">
+						<span th:text="${item.translationList.get('en').description}">
+							Desc </span>
+					</div>
+				</td>
+				<td th:unless="${item.translationList.get(currentLanguage)!=null}">
+					<span th:text="${item.translationList.get('en').description}"> Desc
+				</span>
+				</td>
 				<td><span th:text="${item.category.name}"> Category </span></td>
 				<td><span th:text="${item.location.name}"> Location </span></td>
 				<td><span th:text="${item.owner.username}"> Owner </span></td>
 				<td><a class="btn btn-info"
-					th:href="@{/items/{id} (id=${item.Id})}">Edit</a></td>
+					th:href="@{/items/{id} (id=${item.Id})}" th:text="#{editButton}">=</a></td>
 				<td>
-					<button class="btn btn-danger"
-					 th:data-parameter1="${item.Id}"
-						th:data-parameter2="${item.name}"
+					<button class="btn btn-danger" th:data-parameter1="${item.Id}"
+						th:data-parameter2="${item.translations[0].name}"
 						th:onclick="tryDelete(this.getAttribute('data-parameter1'),this.getAttribute('data-parameter2'));"
-						>Delete</button>
+						th:text="#{deleteButton}"></button>
 				</td>
 			</tr>
 		</tbody>
 	</table>
-	<script>
+	<script th:inline="javascript">
+	var descDiv = document.getElementById("SearchByDescDiv");
+	descDiv.style.display="inline-block";
+	if(localStorage.getItem("checkBoxDesc") == "true"){
+		document.getElementById("findByDescCheckbox").checked = true;
+	}
+		
+		function saveSearchByDesc(e){
+			var currentHref = new URL(window.location.href);
+		    localStorage.setItem("checkBoxDesc", e);
+		    if(e==false)
+		      currentHref.searchParams.delete('byDesc');
+		    else 
+		      currentHref.searchParams.set('byDesc', 'true');
+			window.location.href = currentHref;
+		}
+	
 		function tryDelete(id,name) {
-			var r = confirm("You hant to delete item '" + name + "'?");
+			var message = /*[[#{shureToDelete}]]*/ 'Do you realy whant to delete';
+			var r = confirm(message+" "+ name + "?");
 			if (r == true) {
 				  window.location.href ="/items/delete/"+id;
 			}

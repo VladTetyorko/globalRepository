@@ -24,34 +24,111 @@ INSERT INTO LOCATIONS (NAME) VALUES ('Appartments'),
 INSERT INTO CATEGORIES (NAME) VALUES ('Instruments'),
 ('Appliances'),
 ('Сlothes');
-INSERT INTO ITEMS
+INSERT INTO ITEMS (ID) VALUES (1),
+(2),
+(3);
+INSERT INTO GLOBAL_SETTINGS (NAME) VALUES ('Limit on list'),
+('Limit on page');
+INSERT INTO I18N_SETTINGS
 (
-   NAME,
-   DESCRIPTION
+   LANGUAGE,
+   TRANSLATION,
+   SETTING_ID
 )
 VALUES
 (
-   'Dishwasher',
-   'Best dishwasher in your city'
+   'en',
+   'Limit on list',
+   1
 ),
 
 (
-   'Bottle',
-   'Just a bottle of beer'
+   'ru',
+   'Кол-во записей в выпадающем списке',
+   1
 ),
 
 (
-   'Something',
-   'No one know what is it'
+   'en',
+   'Limit on page',
+   2
+),
+
+(
+   'ru',
+   'Кол-во записей на странице',
+   2
 );
-
-INSERT INTO GLOBAL_SETTINGS( 
-NAME
+INSERT INTO I18N_ITEMS
+(
+   LANGUAGE,
+   TRANSLATION_NAME,
+   TRANSLATION_DESCRIPTION,
+   ITEM_ID
 )
-VALUES 
-('Limit on list'),
-('Limit on page');
+VALUES
+(
+   'en',
+   'Product 1',
+   'Desc 1',
+   1
+),
 
+(
+   'en',
+   'Product 2',
+   'Desc 2',
+   2
+),
+
+(
+   'en',
+   'Product 3',
+   'Desc 3',
+   3
+),
+
+(
+   'ru',
+   'Продукт 1',
+   'Описание 1',
+   1
+),
+
+(
+   'ru',
+   'Продукт 2',
+   'Описание 2',
+   2
+),
+
+(
+   'ru',
+   'Продукт 3',
+   'Описание 3',
+   3
+),
+
+(
+   'ua',
+   'Продукт 1 укр',
+   'Описание 1 укр',
+   1
+),
+
+(
+   'ua',
+   'Продукт 2 укр',
+   'Описание 2 укр',
+   2
+),
+
+(
+   'ua',
+   'Продукт 3 укр',
+   'Описание 3 укр',
+   3
+);
 INSERT INTO ITEM_CATEGORY
 (
    ITEM_ID,

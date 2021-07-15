@@ -19,7 +19,7 @@ public class MainController {
 
 	}
 
-	@RequestMapping(value = { "/index", "/" })
+	@RequestMapping(value = { "/index" })
 	public String index(Model model) {
 		return "redirect:me";
 	}

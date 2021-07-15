@@ -61,6 +61,13 @@ li a:active {
 	float: right;
 }
 
+.navbar-main-indlockdiv{
+	display: grid;
+}
+
+.button-lang{
+	width: 60px;
+}
 
 .login-centre{
 	width:40%;

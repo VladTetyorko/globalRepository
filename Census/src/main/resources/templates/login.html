@@ -6,7 +6,7 @@
 	integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
 	crossorigin="anonymous">
 <link th:href="@{/css/style.css}" href="../../static/css/style.css"
-	rel="stylesheet" />
+	type="text/css" rel="stylesheet">
 </head>
 <body style="background-color: rgb(19, 132, 150);"
 	onload='document.loginForm.username.focus();'>
@@ -14,31 +14,66 @@
 		<form class="form-horizontal" name='login' action="/login"
 			method='POST'>
 			<div class="form-group">
-				<p style="font-size: 250%">Login</p>
-				<div th:if="${errorMessge != null}">
-					<div style="color: red; font-weight: bold; margin: 30px 0px;"
-						th:text="${errorMessge}"></div>
+				<p style="font-size: 250%" th:text="#{login}"></p>
+				<div>
+					<div id="errorMess"
+						style="color: red; font-weight: bold; margin: 30px 0px;"
+						th:text="#{errorMessage}"></div>
+					<div id="noAccMess"
+						style="color: red; font-weight: bold; margin: 30px 0px;"
+						th:text="#{noAccMessage}"></div>
+					<div id="logoutMess"
+						style="color: green; font-weight: bold; margin: 30px 0px;"
+						th:text="#{logoutMessage}"></div>
 				</div>
 				<div class="login-labels">
-					<label class="col-sm-2 control-label">UserName:</label> <input
-						class="col-sm-10" type='text' name='username'
-						placeholder="username"> <label
-						class="col-sm-2 control-label">Password:</label> <input
+					<label class="col-sm-2 control-label" th:text="#{username}"></label>
+					<input class="col-sm-10" type='text' name='username'
+						th:placeholder="#{username}"> <label
+						class="col-sm-2 control-label" th:text="#{password}"></label> <input
 						class="col-sm-10" type='password' name='password'
-						placeholder="password" />
+						th:placeholder="#{password}" />
 				</div>
 				<div>
-					<button class="btn btn-info" type="submit" />
-					Submit
-					</button>
+					<button class="btn btn-info" type="submit" th:text="#{submit}"></button>
 				</div>
 				<div>
-					<a href="/login?create=true">I don't have account</a>
+					<a href="/login?create=true" th:text="#{IDontHaveAcc}"></a>
 				</div>
 			</div>
 			<input type="hidden" name="${_csrf.parameterName}"
 				value="${_csrf.token}" />
+			<div class="buttons-inline-langs">
+				<button class="button-lang" type="button"
+					onclick="changeLanguage('en')">en</button>
+					<button class="button-lang" type="button" 
+					onclick="changeLanguage('ua')">ua</button>
+				<button class="button-lang" type="button" 
+					onclick="changeLanguage('ru')">ru</button>
+			</div>
 		</form>
 	</div>
+	<script>
+	var currentHref = new URL(window.location.href);
+	var logoutMess = document.getElementById("logoutMess");
+	var noAccMess = document.getElementById("noAccMess");
+	var errMess = document.getElementById("errorMess");
+	
+	logoutMess.style.display="none";
+	noAccMess.style.display = "none";
+	errMess.style.display="none";
+	if(currentHref.searchParams.get('logout')!=null)
+		logoutMess.style.display="inline-block";
+	if(currentHref.searchParams.get('error')!=null)
+		errMess.style.display="inline-block";
+	if(currentHref.searchParams.get('create')!=null)
+		noAccMess.style.display="inline-block";
+	
+	function changeLanguage(e){
+		 var urlParams = new URLSearchParams(window.location.search);
+		 urlParams.set('localData',e);
+		 window.location.search = urlParams;
+	}
+	</script>
 </body>
 </html>

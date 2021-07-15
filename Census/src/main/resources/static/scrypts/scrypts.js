@@ -11,6 +11,12 @@ function getPage(page) {
     window.location.href = newLink;
 }
 
+function changeLanguage(e){
+	 var urlParams = new URLSearchParams(window.location.search);
+	 urlParams.set('localData',e);
+	 window.location.search = urlParams;
+}
+
 function addItem() {
     var currentHref, neededHref, pathArray;
     currentHref = window.location.href;
@@ -48,61 +54,6 @@ function searchPage() {
         	}
         };
        
-}
-
-function inputLocation() {
-    var input = document.getElementById("searchLocationInput");
-    input.oninput = function() {
-        var res = input.value.toString();
-        var currentHref = new URL(window.location.href);
-        if (res.length >= 3) {
-            document.getElementById("search-location-selectized").style.visibility = "visible";
-            currentHref.searchParams.set('LocationNamePart', res);
-            document.getElementById('searchLocationValidation').innerHTML = "Shown top 10 locations, to get needed list, please specify request";
-            window.location.href = currentHref;
-        } else if (res.length == 0) {
-            currentHref.searchParams.delete('LocationNamePart');
-            window.location.href = currentHref;
-        } else
-            document.getElementById('searchLocationValidation').innerHTML = "Please, enter at least 3 letters of location name";
-    };
-}
-
-function showbyLocation() {
-    var input = document.getElementById("searchByLimitLocationInput");
-    input.oninput = function() {
-        var res = input.value.toString();
-        var currentHref = new URL(window.location.href);
-        if (res.length >= 3) {
-            document.getElementById("search-location-selectized").style.visibility = "visible";
-            currentHref.searchParams.set('LocationNamePart', res);
-            document.getElementById('searchLocationValidation').innerHTML = "Shown top 10 locations, to get needed list, please specify request";
-            window.location.href = currentHref;
-        } else if (res.length == 0) {
-            currentHref.searchParams.delete('LocationNamePart');
-            window.location.href = currentHref;
-        } else
-            document.getElementById('searchLocationValidation').innerHTML = "Please, enter at least 3 letters of location name";
-    };
-}
-
-
-function inputCategory() {
-    var input = document.getElementById("searchCategoryInput");
-    input.oninput = function() {
-        var res = input.value.toString();
-        var currentHref = new URL(window.location.href);
-        if (res.length >= 3) {
-            document.getElementById("search-location-selectized").style.visibility = "visible";
-            currentHref.searchParams.set('CategoryNamePart', res);
-            document.getElementById('searchCategoryValidation').innerHTML = "Shown top 10 categores, to get needed list, please specify request";
-            window.location.href = currentHref;
-        } else if (res.length == 0) {
-            currentHref.searchParams.delete('CategoryNamePart');
-            window.location.href = currentHref;
-        } else
-            document.getElementById('searchCategoryValidation').innerHTML = "Please, enter at least 3 letters of category name";
-    };
 }
 
 function clearStorageAndBack() {

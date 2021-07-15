@@ -44,7 +44,7 @@ public class ItemService {
 
 	@Transactional
 	public Optional<Item> find(int id) {
-		Optional<Item> founded = null;
+		Optional<Item> founded;
 		if (logger.isDebugEnabled())
 			logger.debug("Searching item with id {}", id);
 		founded = repository.findById(id);
@@ -52,19 +52,6 @@ public class ItemService {
 			logger.info("Item with id '{}' was found successfull", id);
 		else
 			logger.warn("Item with id '{}' doesnt exsist", id);
-		return founded;
-	}
-
-	@Transactional
-	public Optional<Item> findByName(String name) {
-		Optional<Item> founded = null;
-		if (logger.isDebugEnabled())
-			logger.debug("Searching item with name {}", name);
-		founded = repository.findByName(name);
-		if (founded.isPresent())
-			logger.info("Item with name '{}' was found successfull", name);
-		else
-			logger.warn("Item with name '{}' doesnt exsist", name);
 		return founded;
 	}
 
@@ -130,7 +117,7 @@ public class ItemService {
 		List<Item> list = new ArrayList<Item>();
 		if (logger.isDebugEnabled())
 			logger.debug("Searching all items contains {}", partOfName);
-		list = repository.findByLocationAndNameIsContaining(l, partOfName);
+		list = repository.findByLocationAndTranslations_NameIsContaining(l, partOfName);
 		logger.info("Item list contains '{}' was found", partOfName);
 		return list;
 	}
@@ -140,17 +127,48 @@ public class ItemService {
 		List<Item> list = new ArrayList<Item>();
 		if (logger.isDebugEnabled())
 			logger.debug("Searching all items contains {}", partOfName);
-		list = repository.findByCategoryAndNameIsContaining(c, partOfName);
+		list = repository.findByCategoryAndTranslations_NameIsContaining(c, partOfName);
 		logger.info("Item list contains '{}' was found", partOfName);
 		return list;
 	}
 
+	@Transactional
 	public List<Item> findByPartOfNameForUser(User principal, String partOfName) {
 		List<Item> list = new ArrayList<Item>();
 		if (logger.isDebugEnabled())
 			logger.debug("Searching all items contains {}", partOfName);
-		list = repository.findByOwnerAndNameIsContaining(principal, partOfName);
+		list = repository.findByOwnerAndTranslations_NameIsContaining(principal, partOfName);
 		logger.info("Item list contains '{}' was found", partOfName);
+		return list;
+	}
+
+	@Transactional
+	public List<Item> findByPartOfName(String partOfName) {
+		List<Item> list = new ArrayList<Item>();
+		if (logger.isDebugEnabled())
+			logger.debug("Searching all items contains {}", partOfName);
+		list = repository.findByTranslations_NameIsContaining(partOfName);
+		logger.info("Item list contains '{}' was found", partOfName);
+		return list;
+	}
+
+	@Transactional
+	public List<Item> findByPartOfNameAndDesc(String namePart) {
+		List<Item> list = new ArrayList<Item>();
+		if (logger.isDebugEnabled())
+			logger.debug("Searching all items contains in name and description {}", namePart);
+		list = repository.findByNameDescription(namePart);
+		logger.info("Item list desc and name contains '{}' was found", namePart);
+		return list;
+	}
+
+	@Transactional
+	public List<Item> findByPartOfNameAndDescForUser(String namePart, User user) {
+		List<Item> list = new ArrayList<Item>();
+		if (logger.isDebugEnabled())
+			logger.debug("Searching all items contains in name and description {} for user {}", namePart, user);
+		list = repository.findByNameDescription(namePart);
+		logger.info("Item list desc and name contains '{}' was found", namePart);
 		return list;
 	}
 

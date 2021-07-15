@@ -13,4 +13,6 @@ public interface CustomSettingRepository extends JpaRepository<SettingValue, Int
 
 	public List<SettingValue> findByUser(User user);
 
+	public List<SettingValue> findByUserAndGlobalSetting_Translations_Language(User user, String language);
+
 }

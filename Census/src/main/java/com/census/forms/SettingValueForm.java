@@ -63,10 +63,10 @@ public class SettingValueForm {
 		this.value = value;
 	}
 
-	public static SettingValueForm format(SettingValue neededValue) {
+	public static SettingValueForm format(SettingValue neededValue, String language) {
 		SettingValueForm form = new SettingValueForm(neededValue.getId(), neededValue.getUser().getId(),
-				neededValue.getGlobalSetting().getId(), neededValue.getGlobalSetting().getName(),
-				neededValue.getValue());
+				neededValue.getGlobalSetting().getId(),
+				neededValue.getGlobalSetting().getAllTranslationsMap().get(language), neededValue.getValue());
 		return form;
 	}
 

@@ -24,11 +24,23 @@
 	<div class="container">
 		<div th:fragment="header">
 			<ul>
-				<li><a class="navbar-main" href="#" th:href="@{/items/my}">Home</a></li>
-				<li><a th:href="@{/categories}">Categories</a></li>
-				<li><a th:href="@{/locations}">Locations</a></li>
-				<li class="navbar-main-logout"><a th:href="@{/logout}">Logout</a></li>
-				<li class="navbar-main-settings"><a th:href="@{/me/settings}">Settings</a></li>
+				<li><a class="navbar-main" href="#" th:href="@{/}"
+					th:text="#{navbar-home}"></a></li>
+				<li><a href="#" th:href="@{/items/my}" th:text="#{navbar-me}"></a></li>
+				<li><a th:href="@{/categories}" th:text="#{navbar-category}"></a></li>
+				<li><a th:href="@{/locations}" th:text="#{navbar-location}"></a></li>
+				<li class="navbar-main-settings">
+					<button class="button-lang-inblock" type="button"
+						onclick="changeLanguage('en')">en</button>
+					<button class="button-lang-inblock" type="button"
+						onclick="changeLanguage('ua')">ua</button>
+					<button class="button-lang-inblock" type="button"
+						onclick="changeLanguage('ru')">ru</button>
+				</li>
+				<li class="navbar-main-logout"><a th:href="@{/logout}"
+					th:text="#{navbar-logout}"></a></li>
+				<li class="navbar-main-settings"><a th:href="@{/me/settings}"
+					th:text="#{navbar-settings}">Settings</a></li>
 			</ul>
 		</div>
 	</div>
