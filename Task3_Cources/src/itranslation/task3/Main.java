@@ -61,12 +61,12 @@ public class Main {
 			else
 				return WinnerEnum.Computer;
 		else if (userMove > center)
-			if (userMove - compMove < center)
+			if (userMove - compMove < center && userMove - compMove > 0)
 				return WinnerEnum.User;
 			else
 				return WinnerEnum.Computer;
 		else if (compMove > center)
-			if (compMove - userMove < center)
+			if (compMove - userMove < center && compMove - userMove > 0)
 				return WinnerEnum.Computer;
 			else
 				return WinnerEnum.User;
