@@ -55,22 +55,30 @@ public class Main {
 		if (compMove == userMove)
 			return WinnerEnum.Tie;
 		int center = moveLength / 2 + 1;
-		if (userMove == center || compMove == center)
+		if (userMove == center || compMove == center) {
+			System.out.print("here1");
 			if (userMove > compMove)
 				return WinnerEnum.User;
 			else
 				return WinnerEnum.Computer;
-		else if (userMove > center)
+		} else if (userMove > center) {
+			System.out.print("here2");
 			if (userMove - compMove < center && userMove - compMove > 0)
 				return WinnerEnum.User;
 			else
 				return WinnerEnum.Computer;
-		else if (compMove > center)
+		} else if (compMove > center) {
+			System.out.print("here3");
 			if (compMove - userMove < center && compMove - userMove > 0)
 				return WinnerEnum.Computer;
 			else
 				return WinnerEnum.User;
-		return null;
+		} else {
+			if (userMove > compMove)
+				return WinnerEnum.User;
+			else
+				return WinnerEnum.Computer;
+		}
 	}
 
 }
