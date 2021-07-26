@@ -24,17 +24,15 @@ public class Main {
 				insert = menu.showMenu(hmac, availableMoves, availableMoves.get(compMove));
 				if (insert == null) {
 					System.out.println("Incorrect input! Try again!");
-				}
-				else if (insert == 0) {
+				} else if (insert == 0) {
 					return;
-				}
-				else if (availableMoves.containsKey(insert)) {
+				} else if (availableMoves.containsKey(insert)) {
 					System.out.println(insert);
 					userMove = insert;
 					break;
-				} else 
+				} else
 					System.out.println("Incorrect input! Try again!");
-				
+
 			}
 			menu.showResult(availableMoves, checkWin(args.length, compMove, userMove), compMove, userMove, key);
 		} catch (RuntimeException e) {
@@ -53,8 +51,26 @@ public class Main {
 		return result;
 	}
 
-	private static int checkWin(int moveLength, int compMove, int userMove) {
-		return (compMove + moveLength - userMove) % moveLength;
+	private static WinnerEnum checkWin(int moveLength, int compMove, int userMove) {
+		if (compMove == userMove)
+			return WinnerEnum.Tie;
+		int center = moveLength / 2 + 1;
+		if (userMove == center || compMove == center)
+			if (userMove > compMove)
+				return WinnerEnum.User;
+			else
+				return WinnerEnum.Computer;
+		else if (userMove > center)
+			if (userMove - compMove < center)
+				return WinnerEnum.User;
+			else
+				return WinnerEnum.Computer;
+		else if (compMove > center)
+			if (compMove - userMove < center)
+				return WinnerEnum.Computer;
+			else
+				return WinnerEnum.User;
+		return null;
 	}
 
 }

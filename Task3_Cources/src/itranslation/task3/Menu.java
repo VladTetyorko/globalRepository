@@ -31,12 +31,12 @@ public class Menu {
 		return result;
 	}
 
-	public void showResult(Map<Integer, String> availableMoves, int isWinner, int compMove, int userMove, String key) {
+	public void showResult(Map<Integer, String> availableMoves,WinnerEnum winCheckResult, int compMove, int userMove, String key) {
 		System.out.printf("Your move:%s \n" + "Comp move:%s\n", availableMoves.get(userMove),
 				availableMoves.get(compMove));
-		if (isWinner == 0) {
+		if (winCheckResult == WinnerEnum.Tie) {
 			System.out.println("A Tie!");
-		} else if (isWinner == 1) {
+		} else if (winCheckResult == WinnerEnum.Computer) {
 			System.out.println("Computer won!");
 		} else {
 			System.out.println("You won!");
