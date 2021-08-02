@@ -1,4 +1,4 @@
-package com.itranslation.controllers;
+package com.itrans.controllers;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.session.SessionInformation;
 import org.springframework.security.core.session.SessionRegistry;

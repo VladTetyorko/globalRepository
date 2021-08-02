@@ -1,11 +1,11 @@
-package com.itranslation.reporitories;
+package com.itrans.reporitories;
 
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import com.itranslation.entities.User;
+import com.itrans.entities.User;
 
 @Repository
 public interface UserRepository extends JpaRepository<User, Integer> {

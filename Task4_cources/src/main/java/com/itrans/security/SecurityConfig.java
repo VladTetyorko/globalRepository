@@ -1,4 +1,4 @@
-package com.itranslation.security;
+package com.itrans.security;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.servlet.ServletListenerRegistrationBean;
@@ -16,7 +16,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.session.RegisterSessionAuthenticationStrategy;
 import org.springframework.security.web.session.HttpSessionEventPublisher;
 
-import com.itranslation.services.UserService;
+import com.itrans.services.UserService;
 
 @EnableWebSecurity
 @Configuration

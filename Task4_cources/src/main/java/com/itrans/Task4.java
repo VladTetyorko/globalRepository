@@ -1,4 +1,4 @@
-package com.itranslation;
+package com.itrans;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;

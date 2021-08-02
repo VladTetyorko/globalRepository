@@ -1,4 +1,4 @@
-package com.itranslation.controllers;
+package com.itrans.controllers;
 
 import java.util.List;
 
@@ -18,9 +18,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import com.itranslation.entities.User;
-import com.itranslation.entities.UserForm;
-import com.itranslation.services.UserService;
+import com.itrans.entities.User;
+import com.itrans.entities.UserForm;
+import com.itrans.services.UserService;
 
 @Controller
 public class UserController {

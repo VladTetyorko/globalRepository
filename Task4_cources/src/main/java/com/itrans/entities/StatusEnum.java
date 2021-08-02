@@ -1,4 +1,4 @@
-package com.itranslation.entities;
+package com.itrans.entities;
 
 public enum StatusEnum {
 	ACTIVE, DISABLED

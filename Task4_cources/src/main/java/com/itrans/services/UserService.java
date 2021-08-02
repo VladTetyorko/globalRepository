@@ -1,4 +1,4 @@
-package com.itranslation.services;
+package com.itrans.services;
 
 import java.util.List;
 import java.util.Optional;
@@ -13,8 +13,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.itranslation.entities.User;
-import com.itranslation.reporitories.UserRepository;
+import com.itrans.entities.User;
+import com.itrans.reporitories.UserRepository;
 
 @Service
 public class UserService implements UserDetailsService {
