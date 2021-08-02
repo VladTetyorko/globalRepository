@@ -1,5 +1,7 @@
 package com.census.forms.formatters;
 
+import java.io.IOException;
+import java.util.Base64;
 import java.util.List;
 import java.util.Optional;
 
@@ -29,7 +31,7 @@ public class ItemFormFormatter {
 		this.itemService = itemService;
 	}
 
-	public Item format(ItemForm form, String lang) {
+	public Item format(ItemForm form, String lang) throws IOException {
 		Optional<Item> optional = itemService.find(form.getId());
 		Item item;
 		if (optional.isPresent())
@@ -42,6 +44,8 @@ public class ItemFormFormatter {
 		item.setCategory(categoryService.find(form.getCategoryId()).get());
 		item.setLocation(locationService.find(form.getLocationId()).get());
 		item.setOwner(userService.find(form.getOwnerId()).get());
+		String bytes = Base64.getEncoder().encodeToString(form.getPicture().getBytes());
+		item.setPicture(bytes);
 		List<ItemTranslation> translations = form.getTranslations();
 		translations.forEach(s -> {
 			if (s.getLanguage().equals(lang)) {

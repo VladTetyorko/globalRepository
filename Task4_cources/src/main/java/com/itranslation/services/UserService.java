@@ -1,21 +1,20 @@
-package com.census.services;
+package com.itranslation.services;
 
 import java.util.List;
 import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.security.core.userdetails.User.UserBuilder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.core.userdetails.User.UserBuilder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.census.entities.User;
-import com.census.exceptions.AlreadyExsistException;
-import com.census.repositories.UserRepository;
+import com.itranslation.entities.User;
+import com.itranslation.reporitories.UserRepository;
 
 @Service
 public class UserService implements UserDetailsService {
@@ -32,13 +31,12 @@ public class UserService implements UserDetailsService {
 	}
 
 	@Transactional
-	public User save(User user) throws AlreadyExsistException {
+	public User save(User user) {
 		User saved = null;
-		Optional<User> founded = findUserByUsername(user.getUsername());
-		if (founded.isPresent())
-			throw new AlreadyExsistException(user.getUsername());
 		String encodedPassword = bCryptPasswordEncoder.encode(user.getPassword());
 		user.setPassword(encodedPassword);
+		if (user.getStatus() == null)
+			user.setStatus(true);
 		saved = repository.save(user);
 		logger.info("User {} saved", saved.toString());
 		return saved;
@@ -68,30 +66,32 @@ public class UserService implements UserDetailsService {
 	}
 
 	@Transactional
-	public boolean delete(int id) {
+	public String delete(int id) {
 		if (logger.isDebugEnabled())
 			logger.debug("Deleting user with id {}", id);
 		try {
+			String username = repository.findById(id).get().getUsername();
 			repository.deleteById(id);
 			logger.info("User with id={} was deleted", id);
-			return true;
+			return username;
 		} catch (Exception e) {
 			logger.warn(e.toString());
-			return false;
+			return null;
 		}
 	}
 
 	@Override
-	@Transactional
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 		logger.info("Load by username {}", username);
 		Optional<User> user = repository.findByUsername(username);
-
+		System.out.println(user.get());
 		UserBuilder builder = null;
 		if (user.isPresent()) {
 			builder = org.springframework.security.core.userdetails.User.withUsername(username);
 			builder.password(user.get().getPassword());
 			builder.roles("USER");
+			builder.disabled(!user.get().isEnabled());
+			System.out.print(user.get().getStatus());
 			return builder.build();
 		} else {
 			throw new UsernameNotFoundException("User not found.");
@@ -99,19 +99,32 @@ public class UserService implements UserDetailsService {
 	}
 
 	@Transactional
-	public Optional<User> findUserByUsername(String username) {
-		logger.info("findUserByUsername {} ", username);
-
+	public String block(Integer id) {
 		if (logger.isDebugEnabled())
-			logger.debug("Searching for user with username={}", username);
-		try {
-			Optional<User> user = repository.findByUsername(username);
-			logger.info("User with username={} was founded", username);
-			return user;
-		} catch (Exception e) {
-			logger.warn(e.toString());
-			return Optional.empty();
+			logger.debug("Blocking user with id {}", id);
+		User user = find(id).get();
+		if (user != null) {
+			String username = user.getUsername();
+			user.setStatus(false);
+			repository.save(user);
+			logger.info("User with id={} was blocked", id);
+			return username;
 		}
+		return null;
 	}
 
+	@Transactional
+	public String unblock(Integer id) {
+		if (logger.isDebugEnabled())
+			logger.debug("Unblocking user with id {}", id);
+		User user = find(id).get();
+		if (user != null) {
+			String username = user.getUsername();
+			user.setStatus(true);
+			repository.save(user);
+			logger.info("User with id={} was unblocked", id);
+			return username;
+		}
+		return null;
+	}
 }

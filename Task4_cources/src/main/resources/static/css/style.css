@@ -1,0 +1,23 @@
+
+.butonContainer{
+ text-align: center;
+}
+.login-centre{
+	width:40%;
+    margin-left: auto;
+	margin-top: auto;
+	margin-bottom: auto;
+	margin-right: auto;
+	text-align: center;
+}
+
+.form-group{
+	background-color: white; 
+	border: 10px solid white;
+	text-align: center;
+}
+
+.btn-light{
+	width: 100%;
+}
+

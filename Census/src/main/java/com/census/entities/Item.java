@@ -2,6 +2,7 @@ package com.census.entities;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -21,11 +22,14 @@ import javax.persistence.SecondaryTable;
 import javax.persistence.SecondaryTables;
 import javax.persistence.Table;
 
+import org.springframework.context.i18n.LocaleContextHolder;
+
 @Entity
 @Table(name = "ITEMS")
 @SecondaryTables({
 		@SecondaryTable(name = "ITEM_USER", pkJoinColumns = @PrimaryKeyJoinColumn(name = "ITEM_ID", referencedColumnName = "ID")),
 		@SecondaryTable(name = "ITEM_CATEGORY", pkJoinColumns = @PrimaryKeyJoinColumn(name = "ITEM_ID", referencedColumnName = "ID")),
+		@SecondaryTable(name = "ITEM_PICTURE", pkJoinColumns = @PrimaryKeyJoinColumn(name = "ITEM_ID", referencedColumnName = "ID")),
 		@SecondaryTable(name = "ITEM_LOCATION", pkJoinColumns = @PrimaryKeyJoinColumn(name = "ITEM_ID", referencedColumnName = "ID")) })
 public class Item extends TableEntity {
 
@@ -60,7 +64,10 @@ public class Item extends TableEntity {
 	private User owner;
 
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "item")
-	List<ItemTranslation> translations;
+	private List<ItemTranslation> translations;
+
+	@Column(table = "ITEM_PICTURE", name = "PICTURE")
+	private String picture;
 
 	public int getId() {
 		return id;
@@ -110,6 +117,14 @@ public class Item extends TableEntity {
 		this.translations = translations;
 	}
 
+	public String getPicture() {
+		return picture;
+	}
+
+	public void setPicture(String picture) {
+		this.picture = picture;
+	}
+
 	public HashMap<String, ItemTranslation> getTranslationList() {
 		List<ItemTranslation> itemTranslations = getTranslations();
 		Map<String, ItemTranslation> map = itemTranslations.stream()
@@ -125,16 +140,33 @@ public class Item extends TableEntity {
 
 	@Override
 	public String[] toTableRow() {
+		Locale locale = LocaleContextHolder.getLocale();
+		String language = locale.getLanguage();
+		Map<String, ItemTranslation> map = this.getTranslationList();
 		Integer id = getId();
-		String row[] = { id.toString(), this.getCategory().getName(), this.getLocation().getName(),
-				this.getOwner().getUsername() };
+		String row[] = { id.toString(), map.get(language).getName(), map.get(language).getDescription(),
+				this.getCategory().getName(), this.getLocation().getName(), this.getOwner().getUsername() };
 		return row;
 	}
 
 	@Override
 	public String[] getTableHeader() {
-		String row[] = { "ID", "NAME", "Description", "Category", "Location", "Owner" };
-		return row;
+		Locale locale = LocaleContextHolder.getLocale();
+		String language = locale.getLanguage();
+		switch (language) {
+		case "ru": {
+			String row[] = { "ID", "Имя", "Описание", "Категория", "Локация", "Владелец" };
+			return row;
+		}
+		case "ua": {
+			String row[] = { "ID", "Ім'я", "Описання", "Категорія", "Локація", "Власник" };
+			return row;
+		}
+		default: {
+			String row[] = { "ID", "NAME", "Description", "Category", "Location", "Owner" };
+			return row;
+		}
+		}
 	}
 
 }

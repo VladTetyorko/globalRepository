@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+<title>Users</title>
+<script src="/webjars/jquery/3.6.0/jquery.min.js">
+</script>
+<script src="/webjars/bootstrap/4.6.0/js/bootstrap.min.js"></script>
+<link rel="stylesheet"
+	href="/webjars/bootstrap/4.6.0/css/bootstrap.min.css" />
+<link th:href="@{/css/style.css}" href="../../static/css/style.css" rel="stylesheet" />
+</head>
+<body>
+	<div class="container">
+		<div class="butonContainer">
+			<button class="btn btn-info" onclick="unblock()">Unblock</button>
+			<button class="btn btn-warning" onclick="block()">Block</button>
+			<button class="btn btn-danger" onclick="deleteUser()">Delete</button>
+			<button class="btn btn-light"><a href="/logout">Logout</a></button>
+		</div>
+		<table class="table table-bordered">
+			<thead>
+				<tr>
+					<th><input type="checkbox" onClick="toggle(this)" /></th>
+					<th>Id</th>
+					<th>Name</th>
+					<th>Status</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr th:if="${userList.empty}">
+					<td colspan="5">Users not available!</td>
+				</tr>
+				<tr th:each="user : ${userList}">
+					<td><input type="checkbox" name="checkboxUser"
+						th:value="*{user.id}"></td>
+					<td><span th:text="${user.id}"></span></td>
+					<td><span th:text="${user.username}"></span></td>
+					<td><span th:text="${user.status}"></span></td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+	<script>
+		function block() {
+			var checkedValues = getChecked();
+			let newHref = '/block?';
+			let params = 'id=';
+			for (var i = 0; i < Object.keys(checkedValues).length; i++) {
+				params = params + checkedValues[i].value;
+				if (i + 1 < Object.keys(checkedValues).length)
+					params = params + ',';
+			}
+			window.location.href = newHref + params;
+		}
+
+		function deleteUser() {
+			var checkedValues = getChecked();
+			let newHref = '/delete?';
+			let params = 'id=';
+			for (var i = 0; i < Object.keys(checkedValues).length; i++) {
+				params = params + checkedValues[i].value;
+				if (i + 1 < Object.keys(checkedValues).length)
+					params = params + ',';
+			}
+			window.location.href = newHref + params;
+		}
+
+		function unblock() {
+			var checkedValues = getChecked();
+			let newHref = '/unblock?';
+			let params = 'id=';
+			for (var i = 0; i < Object.keys(checkedValues).length; i++) {
+				params = params + checkedValues[i].value;
+				if (i + 1 < Object.keys(checkedValues).length)
+					params = params + ',';
+			}
+			window.location.href = newHref + params;
+		}
+		function getChecked() {
+			checkboxes = document.getElementsByName('checkboxUser');
+			var checkedList = new Array();
+			for (var i = 0, n = checkboxes.length; i < n; i++) {
+				if (checkboxes[i].checked)
+					checkedList.push(checkboxes[i]);
+			}
+			return checkedList;
+		}
+
+		function toggle(source) {
+			checkboxes = document.getElementsByName('checkboxUser');
+			for (var i = 0, n = checkboxes.length; i < n; i++) {
+				checkboxes[i].checked = source.checked;
+			}
+		}
+	</script>
+</body>
+</html>

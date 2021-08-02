@@ -25,7 +25,7 @@ public class MainController {
 	}
 
 	@RequestMapping(value = "/report")
-	public void doGet(HttpServletRequest request, HttpServletResponse response,
+	public void getReport(HttpServletRequest request, HttpServletResponse response,
 			@RequestParam(name = "filename") String filePath) {
 		String name = filePath.split("/")[2];
 		response.setContentType("text/csv");

@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.stereotype.Component;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.census.entities.Item;
 import com.census.entities.ItemTranslation;
@@ -39,6 +40,10 @@ public class ItemForm {
 	private int ownerId;
 
 	private List<ItemTranslation> translations;
+
+	private MultipartFile picture;
+
+	private boolean doesImageExists;
 
 	public int getId() {
 		return id;
@@ -96,6 +101,22 @@ public class ItemForm {
 		this.translations = list;
 	}
 
+	public MultipartFile getPicture() {
+		return picture;
+	}
+
+	public void setPicture(MultipartFile picture) {
+		this.picture = picture;
+	}
+
+	public boolean getDoesImageExists() {
+		return doesImageExists;
+	}
+
+	public void setDoesImageExists(boolean doesImageExists) {
+		this.doesImageExists = doesImageExists;
+	}
+
 	public static ItemForm formatEmpty() {
 		ItemForm form = new ItemForm();
 		{
@@ -115,6 +136,10 @@ public class ItemForm {
 		form.setLocationId(neededItem.getLocation().getId());
 		form.setCategoryId(neededItem.getCategory().getId());
 		form.setOwnerId(neededItem.getOwner().getId());
+		if (neededItem.getPicture() != null) {
+			if (!neededItem.getPicture().equals(""))
+				form.setDoesImageExists(true);
+		}
 		if (!neededItem.getTranslations().isEmpty()) {
 			form.setTranslations(neededItem.getTranslations());
 			translationList.forEach((t, s) -> {

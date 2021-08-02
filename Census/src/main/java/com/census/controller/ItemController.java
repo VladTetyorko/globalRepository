@@ -1,13 +1,20 @@
 package com.census.controller;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
+import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.i18n.LocaleContextHolder;
@@ -59,6 +66,15 @@ public class ItemController {
 		this.reporter = reporter;
 	}
 
+	@RequestMapping("/product/image/{id}")
+	public void showProductImage(@PathVariable int id, HttpServletResponse response) throws IOException {
+		response.setContentType("image/jpeg");
+		Item product = itemService.find(id).get();
+		byte[] bytes = Base64.getDecoder().decode(product.getPicture());
+		InputStream is = new ByteArrayInputStream(bytes);
+		IOUtils.copy(is, response.getOutputStream());
+	}
+
 	@RequestMapping(value = "/", method = RequestMethod.GET)
 	public String getAllItems(Model model, @RequestParam(value = "page", defaultValue = "1") int page,
 			@RequestParam(value = "namePart", required = false) String namePart,
@@ -101,7 +117,7 @@ public class ItemController {
 		List<Item> list = new ArrayList<Item>();
 		User user = getCurrentUser();
 		if (namePart == null)
-			list = itemService.findAll();
+			list = itemService.findForUser(user);
 		else if (byDesk == null) {
 			list = itemService.findByPartOfNameForUser(user, namePart);
 		} else
@@ -193,12 +209,14 @@ public class ItemController {
 	@RequestMapping(value = "/items/{id}", method = RequestMethod.GET)
 	public String editItem(Model model, @PathVariable(name = "id") int id,
 			@RequestParam(name = "LocationNamePart", required = false) String locationNamePart,
-			@RequestParam(name = "CategoryNamePart", required = false) String categoryNamePart) {
+			@RequestParam(name = "CategoryNamePart", required = false) String categoryNamePart)
+			throws UnsupportedEncodingException {
 		logger.info("Html page= /items/{}", id);
 		Locale locale = LocaleContextHolder.getLocale();
 		String language = locale.getLanguage();
 		Optional<Item> neededItem = itemService.find(id);
 		ItemForm form = ItemForm.format(neededItem.get(), language);
+		System.out.print(form.getDoesImageExists() + "\n\n\n\n");
 		model.addAttribute("currentLang", language);
 		if (neededItem.isPresent()) {
 			model.addAttribute("item", form);
@@ -293,7 +311,7 @@ public class ItemController {
 			String language = locale.getLanguage();
 			Item item = formatter.format(form, language);
 			itemService.save(item);
-		} catch (SQLUnexpectedException e) {
+		} catch (SQLUnexpectedException | IOException e) {
 			model.addAttribute("errorMessage", e.getLocalizedMessage());
 			model.addAttribute("locations", locationService.findAll());
 			model.addAttribute("categories", categoryService.findAll());
