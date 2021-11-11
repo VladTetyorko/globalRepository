@@ -1,0 +1,14 @@
+type SomeEntity {
+id: ID!,
+type: String,
+string_field2: String,
+string_field3: String,
+launchDate: String
+}
+type Query {
+vehicles(count: Int):[SomeEntity]
+vehicle(id: ID):SomeEntity
+}
+type Mutation {
+createVehicle(type: String!, string_field2: String!, string_field3: String, launchDate: String):SomeEntity
+}
